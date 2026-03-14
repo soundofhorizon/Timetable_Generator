@@ -1,0 +1,5568 @@
+{
+  "year": 6,
+  "output_path": "./output/時間割.xlsx",
+  "seed": 42,
+  "subjects": [
+    "国語",
+    "数学",
+    "英語",
+    "理科",
+    "社会",
+    "美術",
+    "音楽",
+    "技家",
+    "保体",
+    "学活",
+    "道徳",
+    "総合"
+  ],
+  "classes": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "3-1",
+    "3-2",
+    "3-3"
+  ],
+  "day_periods": {
+    "Mon": 5,
+    "Tue": 6,
+    "Wed": 5,
+    "Thu": 6,
+    "Fri": 6
+  },
+  "teachers": [
+    {
+      "name": "佐々木",
+      "subjects": [
+        "国語"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "宮田",
+      "subjects": [
+        "国語"
+      ],
+      "assigned_classes": [
+        "2-3",
+        "2-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-3",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-2",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-3",
+          "hours": 1,
+          "tt": true
+        }
+      ],
+      "unavailable_slots": [
+        "Fri-1",
+        "Fri-2",
+        "Fri-3",
+        "Fri-4",
+        "Fri-5",
+        "Fri-6",
+        "Mon-1",
+        "Mon-2",
+        "Thu-1",
+        "Thu-2",
+        "Tue-1",
+        "Tue-2",
+        "Wed-1",
+        "Wed-2"
+      ]
+    },
+    {
+      "name": "橋本",
+      "subjects": [
+        "国語"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": [
+        "Fri-1",
+        "Fri-5",
+        "Fri-6",
+        "Mon-1",
+        "Mon-5",
+        "Thu-1",
+        "Thu-5",
+        "Thu-6",
+        "Tue-1",
+        "Tue-5",
+        "Tue-6",
+        "Wed-1",
+        "Wed-5"
+      ]
+    },
+    {
+      "name": "太田",
+      "subjects": [
+        "国語"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-2",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-3",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-4",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "亀井",
+      "subjects": [
+        "社会"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": [
+        "Mon-1",
+        "Mon-2",
+        "Mon-3",
+        "Mon-4",
+        "Mon-5",
+        "Tue-1",
+        "Tue-2",
+        "Tue-3",
+        "Tue-4",
+        "Tue-5",
+        "Tue-6"
+      ]
+    },
+    {
+      "name": "生田",
+      "subjects": [
+        "社会"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": [
+        "Fri-5",
+        "Fri-6",
+        "Wed-5"
+      ]
+    },
+    {
+      "name": "高嶺",
+      "subjects": [
+        "社会"
+      ],
+      "assigned_classes": [
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "3-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "渡邊",
+      "subjects": [
+        "数学"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 4,
+          "tt": true
+        },
+        {
+          "class": "1-2",
+          "hours": 4,
+          "tt": true
+        },
+        {
+          "class": "1-3",
+          "hours": 4,
+          "tt": true
+        },
+        {
+          "class": "1-4",
+          "hours": 4,
+          "tt": true
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "後山",
+      "subjects": [
+        "数学"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": [
+        "Thu-3",
+        "Thu-4",
+        "Thu-5",
+        "Thu-6"
+      ]
+    },
+    {
+      "name": "佐藤",
+      "subjects": [
+        "数学"
+      ],
+      "assigned_classes": [
+        "1-4",
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-4",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "細田",
+      "subjects": [
+        "数学"
+      ],
+      "assigned_classes": [
+        "1-2",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "加藤",
+      "subjects": [
+        "理科"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-2",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-3",
+          "hours": 1,
+          "tt": true
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "山下",
+      "subjects": [
+        "理科"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "金子",
+      "subjects": [
+        "理科"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-2",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-3",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "2-4",
+          "hours": 1,
+          "tt": true
+        },
+        {
+          "class": "3-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "Camelon",
+      "subjects": [
+        "英語"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "田代",
+      "subjects": [
+        "英語"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "山本",
+      "subjects": [
+        "英語"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "梶山",
+      "subjects": [
+        "英語"
+      ],
+      "assigned_classes": [
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "3-1",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 4,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 4,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": [
+        "Fri-1",
+        "Fri-2",
+        "Fri-3",
+        "Fri-4"
+      ]
+    },
+    {
+      "name": "中島",
+      "subjects": [
+        "保体"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "岡",
+      "subjects": [
+        "保体"
+      ],
+      "assigned_classes": [
+        "2-1",
+        "2-2",
+        "2-3",
+        "2-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "2-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "2-4",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "中村",
+      "subjects": [
+        "保体"
+      ],
+      "assigned_classes": [
+        "1-1",
+        "1-2",
+        "1-3",
+        "1-4",
+        "3-1",
+        "3-2",
+        "3-3"
+      ],
+      "class_assignments": [
+        {
+          "class": "1-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-3",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "1-4",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-1",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-2",
+          "hours": 3,
+          "tt": false
+        },
+        {
+          "class": "3-3",
+          "hours": 3,
+          "tt": false
+        }
+      ],
+      "unavailable_slots": []
+    },
+    {
+      "name": "永尾",
+      "subjects": [
+        "保体"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "小泉",
+      "subjects": [
+        "技術"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "井内",
+      "subjects": [
+        "音楽"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "飯沼",
+      "subjects": [
+        "美術"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "桐山",
+      "subjects": [
+        "家庭"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "栗原",
+      "subjects": [
+        "個別"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    },
+    {
+      "name": "大柴",
+      "subjects": [
+        "個別"
+      ],
+      "assigned_classes": [],
+      "class_assignments": [],
+      "unavailable_slots": []
+    }
+  ],
+  "class_subject_teacher": {
+    "1-1": {
+      "国語": "佐々木",
+      "社会": "亀井",
+      "数学": "後山",
+      "理科": "加藤",
+      "英語": "田代",
+      "保体": "中村"
+    },
+    "1-2": {
+      "国語": "佐々木",
+      "社会": "亀井",
+      "数学": "細田",
+      "理科": "加藤",
+      "英語": "田代",
+      "保体": "中村"
+    },
+    "1-3": {
+      "国語": "佐々木",
+      "社会": "亀井",
+      "数学": "後山",
+      "理科": "加藤",
+      "英語": "田代",
+      "保体": "中村"
+    },
+    "1-4": {
+      "国語": "佐々木",
+      "社会": "亀井",
+      "数学": "佐藤",
+      "理科": "加藤",
+      "英語": "田代",
+      "保体": "中村"
+    },
+    "2-3": {
+      "国語": "太田",
+      "社会": "生田",
+      "数学": "佐藤",
+      "理科": "金子",
+      "英語": "山本",
+      "保体": "岡"
+    },
+    "2-4": {
+      "国語": "太田",
+      "社会": "生田",
+      "数学": "佐藤",
+      "理科": "金子",
+      "英語": "山本",
+      "保体": "岡"
+    },
+    "3-1": {
+      "国語": "太田",
+      "社会": "高嶺",
+      "数学": "細田",
+      "理科": "金子",
+      "英語": "梶山",
+      "保体": "中村"
+    },
+    "3-2": {
+      "国語": "太田",
+      "社会": "高嶺",
+      "数学": "細田",
+      "理科": "金子",
+      "英語": "梶山",
+      "保体": "中村"
+    },
+    "3-3": {
+      "国語": "太田",
+      "社会": "高嶺",
+      "数学": "細田",
+      "理科": "金子",
+      "英語": "梶山",
+      "保体": "中村"
+    },
+    "2-1": {
+      "国語": "太田",
+      "社会": "生田",
+      "数学": "佐藤",
+      "理科": "金子",
+      "英語": "山本",
+      "保体": "岡"
+    },
+    "2-2": {
+      "国語": "太田",
+      "社会": "生田",
+      "数学": "佐藤",
+      "理科": "金子",
+      "英語": "山本",
+      "保体": "岡"
+    }
+  },
+  "class_subject_unavailable": [],
+  "solver": {
+    "time_limit_sec": 90,
+    "random_restarts": 8,
+    "engine": "cp_sat"
+  },
+  "scenarios": [
+    {
+      "id": "1grade-music-art",
+      "target_block": "upper",
+      "weekly_requirements": {},
+      "fixed_assignments": [
+        {
+          "class": "1-1",
+          "slot": "Mon-1",
+          "subject": "音美"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-3",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-1",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-2",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-5",
+          "subject": "美術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-6",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-5",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-6",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-1",
+          "subject": "技術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-3",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-6",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-2",
+          "subject": "音美"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-2",
+          "subject": "理科"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-4",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-6",
+          "subject": "美術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-3",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-4",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-4",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-5",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-6",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-2",
+          "subject": "技術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-5",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-6",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-2",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-3",
+          "subject": "音美"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-1",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-2",
+          "subject": "美術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-3",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-6",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-1",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-5",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-2",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-6",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-1",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-3",
+          "subject": "技術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-5",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-6",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-3",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-4",
+          "subject": "音美"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-1",
+          "subject": "美術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-6",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-3",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-5",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-2",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-3",
+          "subject": "社会"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-6",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-3",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-4",
+          "subject": "技術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-5",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-6",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-5",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-6",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-2",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-3",
+          "subject": "美術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-1",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-1",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-4",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-6",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-2",
+          "subject": "美術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-1",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-5",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-1",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-3",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-1",
+          "subject": "技術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-1",
+          "subject": "美術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-3",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-5",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-6",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-1",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-2",
+          "subject": "技術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-4",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-5",
+          "subject": "美術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-6",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-1",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-2",
+          "subject": "技家"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-5",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-6",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-1",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-5",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-5",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-6",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-3",
+          "subject": "美術"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-5",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-1",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-3",
+          "subject": "技家"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-2",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-6",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-5",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-6",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-4",
+          "subject": "美術"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-5",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-2",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-4",
+          "subject": "技家"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-1",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-4",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-5",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-6",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-3",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-5",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-3",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-6",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-1",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-3",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-5",
+          "subject": "美術"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        }
+      ],
+      "manual_skill_assignments": [
+        {
+          "class": "1-1",
+          "slot": "Mon-1",
+          "subject": "音美"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-5",
+          "subject": "美術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-1",
+          "subject": "技術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-2",
+          "subject": "音美"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-6",
+          "subject": "美術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-4",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-2",
+          "subject": "技術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-3",
+          "subject": "音美"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-2",
+          "subject": "美術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-3",
+          "subject": "技術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-4",
+          "subject": "音美"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-1",
+          "subject": "美術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-3",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-4",
+          "subject": "技術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-3",
+          "subject": "美術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-4",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-2",
+          "subject": "美術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-1",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-1",
+          "subject": "技術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-1",
+          "subject": "美術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-2",
+          "subject": "技術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-5",
+          "subject": "美術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-2",
+          "subject": "技家"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-3",
+          "subject": "美術"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-3",
+          "subject": "技家"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-4",
+          "subject": "美術"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-4",
+          "subject": "技家"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-5",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-5",
+          "subject": "美術"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        }
+      ],
+      "tt_marks": [
+        {
+          "class": "1-1",
+          "slot": "Fri-3"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-2"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-2"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-4"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-5"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-1"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-3"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-5"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-4"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-4"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-4"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-1"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-6"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-6"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-5"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-2"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-4"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-1"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-2"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-4"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-5"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-4"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-5"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-6"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-5"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-2"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-3"
+        }
+      ]
+    },
+    {
+      "id": "1grade-general",
+      "target_block": "lower",
+      "weekly_requirements": {},
+      "fixed_assignments": [
+        {
+          "class": "1-1",
+          "slot": "Mon-1",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-3",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-1",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-2",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-5",
+          "subject": "美術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-6",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-3",
+          "subject": "理科"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-5",
+          "subject": "社会"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-6",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-1",
+          "subject": "技術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-3",
+          "subject": "数学"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-5",
+          "subject": "国語"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-6",
+          "subject": "美術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-3",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-4",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-2",
+          "subject": "理科"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-5",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-6",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-2",
+          "subject": "技術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-5",
+          "subject": "理科"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-2",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-3",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-4",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-1",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-2",
+          "subject": "美術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-6",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-1",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-5",
+          "subject": "理科"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-2",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-3",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-6",
+          "subject": "社会"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-1",
+          "subject": "国語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-2",
+          "subject": "数学"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-3",
+          "subject": "技術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-5",
+          "subject": "英語"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-2",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-3",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-1",
+          "subject": "美術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-2",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-3",
+          "subject": "社会"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-4",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-6",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-3",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-5",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-2",
+          "subject": "社会"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-3",
+          "subject": "国語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-6",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-1",
+          "subject": "数学"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-2",
+          "subject": "英語"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-3",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-4",
+          "subject": "技術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-5",
+          "subject": "社会"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-6",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-2",
+          "subject": "社会"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-3",
+          "subject": "美術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-1",
+          "subject": "英語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-1",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-4",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-6",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-2",
+          "subject": "美術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-5",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-1",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-2",
+          "subject": "数学"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-5",
+          "subject": "理科"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-1",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-3",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-1",
+          "subject": "技術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-5",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-1",
+          "subject": "美術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-2",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-3",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-3",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-5",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-6",
+          "subject": "社会"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-4",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-2",
+          "subject": "技術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-1",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-3",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-4",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-5",
+          "subject": "美術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-2",
+          "subject": "英語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-3",
+          "subject": "数学"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-4",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-5",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-6",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-1",
+          "subject": "社会"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-2",
+          "subject": "国語"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-4",
+          "subject": "理科"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-1",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-2",
+          "subject": "技家"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-5",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-6",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-1",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-5",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-5",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-6",
+          "subject": "理科"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-3",
+          "subject": "美術"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-5",
+          "subject": "国語"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-1",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-3",
+          "subject": "技家"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-2",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-3",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-5",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-6",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-1",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-2",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-5",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-4",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-5",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-6",
+          "subject": "国語"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-4",
+          "subject": "美術"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-5",
+          "subject": "社会"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-1",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-2",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-3",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-4",
+          "subject": "技家"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-1",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-3",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-4",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-5",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-6",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-1",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-2",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-3",
+          "subject": "国語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-4",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-5",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-2",
+          "subject": "英語"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-3",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-4",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-6",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-1",
+          "subject": "理科"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-3",
+          "subject": "数学"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-4",
+          "subject": "社会"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-5",
+          "subject": "美術"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        }
+      ],
+      "manual_skill_assignments": [
+        {
+          "class": "1-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-5",
+          "subject": "美術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-1",
+          "subject": "技術"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-6",
+          "subject": "美術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-2",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-4",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-3",
+          "subject": "保体"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-2",
+          "subject": "技術"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-2",
+          "subject": "美術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-3",
+          "subject": "技術"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-1",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-1",
+          "subject": "美術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-5",
+          "subject": "保体"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-3",
+          "subject": "家庭"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-4",
+          "subject": "技術"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-4",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-1",
+          "slot": "Wed-3",
+          "subject": "美術"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-1",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-3",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Tue-4",
+          "subject": "技術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Wed-2",
+          "subject": "美術"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-2",
+          "slot": "Thu-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-1",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-3",
+          "subject": "保体"
+        },
+        {
+          "class": "2-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-1",
+          "subject": "技術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-2",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-3",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-1",
+          "subject": "美術"
+        },
+        {
+          "class": "2-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-2",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-1",
+          "subject": "家庭"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-2",
+          "subject": "技術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Tue-6",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-5",
+          "subject": "美術"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-5",
+          "subject": "保体"
+        },
+        {
+          "class": "2-4",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-2",
+          "subject": "技家"
+        },
+        {
+          "class": "3-1",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-1",
+          "slot": "Thu-3",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-3",
+          "subject": "美術"
+        },
+        {
+          "class": "3-1",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-3",
+          "subject": "技家"
+        },
+        {
+          "class": "3-2",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-3",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-2",
+          "slot": "Thu-2",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-1",
+          "subject": "保体"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-4",
+          "subject": "美術"
+        },
+        {
+          "class": "3-2",
+          "slot": "Fri-6",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-4",
+          "subject": "技家"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-5",
+          "subject": "学活"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Wed-5",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-1",
+          "subject": "道徳"
+        },
+        {
+          "class": "3-3",
+          "slot": "Thu-5",
+          "subject": "音楽"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-2",
+          "subject": "保体"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-5",
+          "subject": "美術"
+        },
+        {
+          "class": "3-3",
+          "slot": "Fri-6",
+          "subject": "学活"
+        }
+      ],
+      "tt_marks": [
+        {
+          "class": "1-1",
+          "slot": "Fri-3"
+        },
+        {
+          "class": "1-1",
+          "slot": "Thu-2"
+        },
+        {
+          "class": "1-1",
+          "slot": "Tue-2"
+        },
+        {
+          "class": "1-1",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "1-2",
+          "slot": "Fri-4"
+        },
+        {
+          "class": "1-2",
+          "slot": "Thu-5"
+        },
+        {
+          "class": "1-2",
+          "slot": "Tue-1"
+        },
+        {
+          "class": "1-2",
+          "slot": "Wed-3"
+        },
+        {
+          "class": "1-3",
+          "slot": "Fri-2"
+        },
+        {
+          "class": "1-3",
+          "slot": "Thu-4"
+        },
+        {
+          "class": "1-3",
+          "slot": "Tue-4"
+        },
+        {
+          "class": "1-3",
+          "slot": "Wed-4"
+        },
+        {
+          "class": "1-4",
+          "slot": "Fri-1"
+        },
+        {
+          "class": "1-4",
+          "slot": "Thu-6"
+        },
+        {
+          "class": "1-4",
+          "slot": "Tue-6"
+        },
+        {
+          "class": "1-4",
+          "slot": "Wed-5"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-5"
+        },
+        {
+          "class": "2-1",
+          "slot": "Tue-6"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-1"
+        },
+        {
+          "class": "2-2",
+          "slot": "Mon-2"
+        },
+        {
+          "class": "2-3",
+          "slot": "Mon-4"
+        },
+        {
+          "class": "2-3",
+          "slot": "Wed-2"
+        },
+        {
+          "class": "2-4",
+          "slot": "Thu-4"
+        },
+        {
+          "class": "2-4",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-5"
+        },
+        {
+          "class": "3-1",
+          "slot": "Tue-6"
+        },
+        {
+          "class": "3-2",
+          "slot": "Tue-2"
+        },
+        {
+          "class": "3-2",
+          "slot": "Wed-1"
+        },
+        {
+          "class": "3-3",
+          "slot": "Mon-2"
+        },
+        {
+          "class": "3-3",
+          "slot": "Tue-3"
+        }
+      ]
+    }
+  ],
+  "excel_variant_settings": {
+    "①": {
+      "onbi_start_music": true,
+      "tech_subject": "技術",
+      "onbi_overrides": {
+        "1-1|Mon-1": "音楽",
+        "1-2|Mon-2": "美術",
+        "1-3|Mon-3": "音楽",
+        "1-4|Mon-4": "美術"
+      },
+      "tech_overrides": {
+        "3-1|Mon-2": "技術",
+        "3-2|Mon-3": "技術",
+        "3-3|Mon-4": "技術"
+      }
+    },
+    "②": {
+      "onbi_start_music": false,
+      "tech_subject": "家庭",
+      "onbi_overrides": {
+        "1-1|Mon-1": "美術",
+        "1-2|Mon-2": "音楽",
+        "1-3|Mon-3": "美術",
+        "1-4|Mon-4": "音楽"
+      },
+      "tech_overrides": {
+        "3-1|Mon-2": "家庭",
+        "3-2|Mon-3": "家庭",
+        "3-3|Mon-4": "家庭"
+      }
+    },
+    "③": {
+      "onbi_start_music": null,
+      "tech_subject": "技術",
+      "onbi_overrides": {},
+      "tech_overrides": {
+        "3-1|Mon-2": "技術",
+        "3-2|Mon-3": "技術",
+        "3-3|Mon-4": "技術"
+      }
+    },
+    "④": {
+      "onbi_start_music": true,
+      "tech_subject": "家庭",
+      "onbi_overrides": {
+        "1-1|Mon-1": "音楽",
+        "1-2|Mon-2": "美術",
+        "1-3|Mon-3": "音楽",
+        "1-4|Mon-4": "美術"
+      },
+      "tech_overrides": {
+        "3-1|Mon-2": "家庭",
+        "3-2|Mon-3": "家庭",
+        "3-3|Mon-4": "家庭"
+      }
+    },
+    "⑤": {
+      "onbi_start_music": false,
+      "tech_subject": "技術",
+      "onbi_overrides": {
+        "1-1|Mon-1": "美術",
+        "1-2|Mon-2": "音楽",
+        "1-3|Mon-3": "美術",
+        "1-4|Mon-4": "音楽"
+      },
+      "tech_overrides": {
+        "3-1|Mon-2": "技術",
+        "3-2|Mon-3": "技術",
+        "3-3|Mon-4": "技術"
+      }
+    },
+    "⑥": {
+      "onbi_start_music": null,
+      "tech_subject": "家庭",
+      "onbi_overrides": {},
+      "tech_overrides": {
+        "3-1|Mon-2": "家庭",
+        "3-2|Mon-3": "家庭",
+        "3-3|Mon-4": "家庭"
+      }
+    }
+  }
+}
