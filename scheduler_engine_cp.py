@@ -1,6 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 from ortools.sat.python import cp_model
 
 DAY_ORDER = ["Mon","Tue","Wed","Thu","Fri"]
@@ -46,6 +45,237 @@ def build_slots(day_periods:dict[str,int])->list[str]:
         for p in range(1,int(day_periods[d])+1):
             slots.append(f"{d}-{p}")
     return slots
+
+
+def _normalize_fixed_assignment_rows(fixed_raw: list[dict]) -> list[dict[str, str]]:
+    out: list[dict[str, str]] = []
+    for a in fixed_raw:
+        c = str(a.get("class", "")).strip()
+        t = str(a.get("slot", "")).strip()
+        s = str(a.get("subject", "")).strip()
+        if c and t and s:
+            out.append({"class": c, "slot": t, "subject": s})
+    return out
+
+
+def _assign_fixed_lessons_to_non_tt_teachers(
+    *,
+    non_tt: dict[tuple[str, str, str], int],
+    fixed_raw: list[dict],
+    teacher_unavailable: dict[str, set[str]],
+    teacher_discouraged: Optional[dict[str, set[str]]] = None,
+    time_limit_sec: float,
+) -> tuple[dict[tuple[str, str], str], list[str]]:
+    teacher_discouraged = teacher_discouraged or {}
+    fixed_list = _normalize_fixed_assignment_rows(fixed_raw)
+    if not fixed_list:
+        return {}, []
+
+    non_tt_caps = {
+        (k, c, s): int(h)
+        for (k, c, s), h in non_tt.items()
+        if int(h) > 0
+    }
+
+    lessons: list[dict] = []
+    issues: list[str] = []
+    for i, a in enumerate(fixed_list):
+        c = a["class"]
+        t = a["slot"]
+        s = a["subject"]
+        raw_candidates = sorted(
+            k for (k, cc, ss), h in non_tt_caps.items()
+            if cc == c and ss == s and int(h) > 0
+        )
+        if not raw_candidates:
+            continue
+
+        candidates = [k for k in raw_candidates if t not in teacher_unavailable.get(k, set())]
+        if not candidates:
+            issues.append(
+                f"- {c} {t} {s}: 主担当 { '・'.join(raw_candidates) } が全員不可コマ"
+            )
+            continue
+
+        lessons.append(
+            {
+                "index": i,
+                "class": c,
+                "slot": t,
+                "subject": s,
+                "candidates": candidates,
+            }
+        )
+
+    if issues:
+        return {}, issues
+
+    if not lessons:
+        return {}, []
+
+    model: Any = cp_model.CpModel()
+    assign_vars: dict[tuple[int, str], Any] = {}
+
+    for lesson in lessons:
+        idx = int(lesson["index"])
+        for teacher in lesson["candidates"]:
+            assign_vars[(idx, teacher)] = model.NewBoolVar(f"fixed_teacher_{idx}_{teacher}")
+        model.Add(sum(assign_vars[(idx, teacher)] for teacher in lesson["candidates"]) == 1)
+
+    teacher_slot_map: dict[tuple[str, str], list[Any]] = {}
+    teacher_class_subject_map: dict[tuple[str, str, str], list[Any]] = {}
+    for lesson in lessons:
+        idx = int(lesson["index"])
+        c = str(lesson["class"])
+        t = str(lesson["slot"])
+        s = str(lesson["subject"])
+        for teacher in lesson["candidates"]:
+            var = assign_vars[(idx, teacher)]
+            teacher_slot_map.setdefault((teacher, t), []).append(var)
+            teacher_class_subject_map.setdefault((teacher, c, s), []).append(var)
+
+    for vars_t in teacher_slot_map.values():
+        model.Add(sum(vars_t) <= 1)
+
+    for key, vars_kcs in teacher_class_subject_map.items():
+        model.Add(sum(vars_kcs) <= non_tt_caps.get(key, 0))
+
+    discouraged_terms: list[Any] = []
+    for lesson in lessons:
+        idx = int(lesson["index"])
+        slot = str(lesson["slot"])
+        for teacher in lesson["candidates"]:
+            if slot in teacher_discouraged.get(teacher, set()):
+                discouraged_terms.append(assign_vars[(idx, teacher)])
+
+    if discouraged_terms:
+        model.Minimize(sum(discouraged_terms))
+
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = max(3.0, min(15.0, float(time_limit_sec)))
+    solver.parameters.num_search_workers = 8
+    status = solver.Solve(model)
+    if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        forced_conflicts: list[str] = []
+        forced_by_teacher_slot: dict[tuple[str, str], list[str]] = {}
+        for lesson in lessons:
+            candidates = list(lesson["candidates"])
+            if len(candidates) != 1:
+                continue
+            teacher = candidates[0]
+            slot = str(lesson["slot"])
+            forced_by_teacher_slot.setdefault((teacher, slot), []).append(
+                f"{lesson['class']} {slot} {lesson['subject']}"
+            )
+        for (teacher, slot), items in sorted(forced_by_teacher_slot.items()):
+            if len(items) >= 2:
+                forced_conflicts.append(
+                    f"- {teacher} は {slot} に固定{len(items)}件（{' / '.join(items[:4])}）"
+                )
+            if len(forced_conflicts) >= 3:
+                break
+
+        issues = ["- 固定コマどうしの主担当割当が両立しません"]
+        issues.extend(forced_conflicts)
+        return {}, issues
+
+    fixed_teacher_assignments: dict[tuple[str, str], str] = {}
+    for lesson in lessons:
+        idx = int(lesson["index"])
+        c = str(lesson["class"])
+        t = str(lesson["slot"])
+        for teacher in lesson["candidates"]:
+            if solver.Value(assign_vars[(idx, teacher)]) == 1:
+                fixed_teacher_assignments[(c, t)] = teacher
+                break
+
+    return fixed_teacher_assignments, []
+
+
+def _build_fixed_teacher_usage(
+    fixed_teacher_assignments: dict[tuple[str, str], str],
+) -> tuple[dict[str, set[str]], dict[tuple[str, str], int], dict[tuple[str, str], int]]:
+    fixed_teacher_busy: dict[str, set[str]] = {}
+    fixed_main_h: dict[tuple[str, str], int] = {}
+    fixed_teacher_day_load: dict[tuple[str, str], int] = {}
+
+    for (c, slot), teacher in fixed_teacher_assignments.items():
+        fixed_teacher_busy.setdefault(teacher, set()).add(slot)
+        fixed_main_h[(teacher, c)] = fixed_main_h.get((teacher, c), 0) + 1
+        day = parse_slot(slot)[0]
+        fixed_teacher_day_load[(teacher, day)] = fixed_teacher_day_load.get((teacher, day), 0) + 1
+
+    return fixed_teacher_busy, fixed_main_h, fixed_teacher_day_load
+
+
+def _build_teacher_day_variance_objective_terms(
+    *,
+    model: Any,
+    classes: list[str],
+    slots: list[str],
+    teachers: list[str],
+    y: dict[tuple[str, str, str], Any],
+    z: dict[tuple[str, str, str], Any],
+    fixed_teacher_day_load: Optional[dict[tuple[str, str], int]] = None,
+) -> tuple[dict[tuple[str, str], Any], Any, int]:
+    slots_by_day = {
+        d: [t for t in slots if parse_slot(t)[0] == d]
+        for d in DAY_ORDER
+    }
+
+    teacher_day_load: dict[tuple[str, str], Any] = {}
+    variance_terms: list[Any] = []
+    weekly_load_upper_bound = len(slots)
+    fixed_teacher_day_load = fixed_teacher_day_load or {}
+
+    for k in teachers:
+        day_load_vars: list[Any] = []
+        day_sq_vars: list[Any] = []
+
+        for d in DAY_ORDER:
+            day_slots = slots_by_day[d]
+            day_upper_bound = len(day_slots)
+            fixed_load = int(fixed_teacher_day_load.get((k, d), 0))
+            load_var = model.NewIntVar(fixed_load, day_upper_bound, f"teacher_day_load_{k}_{d}")
+            day_terms = []
+            for t in day_slots:
+                day_terms.extend(
+                    y[(k, c, t)]
+                    for c in classes
+                    if (k, c, t) in y
+                )
+                day_terms.extend(
+                    z[(k, c, t)]
+                    for c in classes
+                    if (k, c, t) in z
+                )
+
+            if day_terms:
+                model.Add(load_var == fixed_load + sum(day_terms))
+            else:
+                model.Add(load_var == fixed_load)
+
+            sq_var = model.NewIntVar(0, day_upper_bound * day_upper_bound, f"teacher_day_load_sq_{k}_{d}")
+            model.AddMultiplicationEquality(sq_var, [load_var, load_var])
+
+            teacher_day_load[(k, d)] = load_var
+            day_load_vars.append(load_var)
+            day_sq_vars.append(sq_var)
+
+        weekly_load_var = model.NewIntVar(0, weekly_load_upper_bound, f"teacher_week_load_{k}")
+        model.Add(weekly_load_var == sum(day_load_vars))
+
+        weekly_sq_var = model.NewIntVar(0, weekly_load_upper_bound * weekly_load_upper_bound, f"teacher_week_load_sq_{k}")
+        model.AddMultiplicationEquality(weekly_sq_var, [weekly_load_var, weekly_load_var])
+
+        variance_terms.append(len(DAY_ORDER) * sum(day_sq_vars) - weekly_sq_var)
+
+    variance_upper_bound = max(
+        1,
+        len(teachers) * len(DAY_ORDER) * sum(len(slots_by_day[d]) ** 2 for d in DAY_ORDER),
+    )
+    variance_expr = cp_model.LinearExpr.Sum(variance_terms)
+    return teacher_day_load, variance_expr, variance_upper_bound
 
 
 def _build_subject_requirements(non_tt: dict[tuple[str, str, str], int]) -> dict[tuple[str, str], int]:
@@ -102,6 +332,16 @@ def _is_scenario_feasible_with_fixed(
         if c and t and s:
             fixed[(c, t)] = s
 
+    fixed_teacher_assignments, fixed_teacher_issues = _assign_fixed_lessons_to_non_tt_teachers(
+        non_tt=non_tt,
+        fixed_raw=fixed_raw,
+        teacher_unavailable=teacher_unavailable,
+        time_limit_sec=max(3.0, min(10.0, float(time_limit_sec))),
+    )
+    if fixed_teacher_issues:
+        return False
+    fixed_teacher_busy, fixed_main_h, _fixed_teacher_day_load = _build_fixed_teacher_usage(fixed_teacher_assignments)
+
     auto_exempt = {a.get("subject", "") for a in fixed_raw if a.get("subject")}
     exempt = set(exempt_subjects) | auto_exempt
 
@@ -111,8 +351,8 @@ def _is_scenario_feasible_with_fixed(
     for (c, _), s in fixed.items():
         class_subjects[c].add(s)
 
-    model = cp_model.CpModel()
-    x: dict[tuple[str, str, str], cp_model.IntVar] = {}
+    model: Any = cp_model.CpModel()
+    x: dict[tuple[str, str, str], Any] = {}
 
     for c in classes:
         for t in slots:
@@ -162,7 +402,7 @@ def _is_scenario_feasible_with_fixed(
                 if vars_auto:
                     model.Add(sum(vars_auto) <= 1)
 
-    y: dict[tuple[str, str, str], cp_model.IntVar] = {}
+    y: dict[tuple[str, str, str], Any] = {}
     teachers_used = sorted({k for (k, _c, _s) in non_tt})
     for (k, c, _s), _ in non_tt.items():
         for t in slots:
@@ -190,6 +430,8 @@ def _is_scenario_feasible_with_fixed(
             vars_t = [y[(k, c, t)] for c in classes if (k, c, t) in y]
             if vars_t:
                 model.Add(sum(vars_t) <= 1)
+            if t in fixed_teacher_busy.get(k, set()) and vars_t:
+                model.Add(sum(vars_t) == 0)
             if t in teacher_unavailable.get(k, set()) and vars_t:
                 model.Add(sum(vars_t) == 0)
 
@@ -197,8 +439,11 @@ def _is_scenario_feasible_with_fixed(
     for (k, c, _s), h in non_tt.items():
         main_h[(k, c)] = main_h.get((k, c), 0) + int(h)
     for (k, c), h in main_h.items():
+        target = h - fixed_main_h.get((k, c), 0)
+        if target < 0:
+            return False
         vars_kc = [y[(k, c, t)] for t in slots if (k, c, t) in y]
-        model.Add(sum(vars_kc) == h)
+        model.Add(sum(vars_kc) == target)
 
     # 可解診断ではTTは評価対象外（本体モデルでのみ最適化対象）。
     tt: dict[tuple[str, str, str], int] = {}
@@ -207,7 +452,7 @@ def _is_scenario_feasible_with_fixed(
     # TT VARIABLES / CONSTRAINTS
     # -----------------------------
 
-    z={}
+    z: dict[tuple[str, str, str], Any] = {}
 
     for (k,c,s),h in tt.items():
         if h<=0:
@@ -238,6 +483,8 @@ def _is_scenario_feasible_with_fixed(
             )
             if vars_t:
                 model.Add(sum(vars_t) <= 1)
+            if t in fixed_teacher_busy.get(k, set()) and vars_t:
+                model.Add(sum(vars_t) == 0)
 
     # TT時間は要求時間を上限とし、過剰に割り当てない。
     for (k,c,_s),h in tt.items():
@@ -338,14 +585,14 @@ def _diagnose_infeasible_fixed_core(
     if not fixed_list:
         return []
 
-    model = cp_model.CpModel()
+    model: Any = cp_model.CpModel()
     class_subjects = {c: set() for c in classes}
     for (c, s), _ in req.items():
         class_subjects[c].add(s)
     for a in fixed_list:
         class_subjects[a["class"]].add(a["subject"])
 
-    x: dict[tuple[str, str, str], cp_model.IntVar] = {}
+    x: dict[tuple[str, str, str], Any] = {}
     for c in classes:
         for t in slots:
             for s in class_subjects[c]:
@@ -381,7 +628,7 @@ def _diagnose_infeasible_fixed_core(
                 if vars_auto:
                     model.Add(sum(vars_auto) <= 1)
 
-    y: dict[tuple[str, str, str], cp_model.IntVar] = {}
+    y: dict[tuple[str, str, str], Any] = {}
     teachers_used = sorted({k for (k, _c, _s) in non_tt})
     for (k, c, _s), _ in non_tt.items():
         for t in slots:
@@ -408,8 +655,8 @@ def _diagnose_infeasible_fixed_core(
             if t in teacher_unavailable.get(k, set()) and vars_t:
                 model.Add(sum(vars_t) == 0)
 
-    assumptions: list[cp_model.IntVar] = []
-    lit_to_fixed: dict[int, dict] = {}
+    assumptions: list[Any] = []
+    lit_to_fixed: dict[int, dict[str, str]] = {}
     for i, a in enumerate(fixed_list):
         c = a["class"]
         t = a["slot"]
@@ -784,12 +1031,30 @@ def solve_all_scenarios_cp(
     log_file.write("TEACHERS:" + str(len(teachers)) + "\n")
     log_file.write("SCENARIOS:" + str(len(scenarios)) + "\n")
 
+    def _emit_progress(percent:int, message:str) -> None:
+        if not progress_callback:
+            return
+        progress_callback(max(0, min(100, int(percent))), str(message))
+
+    total = max(1, len(scenarios))
+
+    def _scenario_progress(index:int, sid_now:str, percent:int, message:str) -> None:
+        if not progress_callback:
+            return
+        base = int((index * 100) / total)
+        span = max(1, int(100 / total))
+        global_p = min(100, base + int((span * max(0, min(100, int(percent)))) / 100))
+        progress_callback(global_p, f"{sid_now}: {message}")
+
+    _emit_progress(1, "CP-SATの入力データを確認中")
+
     # -----------------------------
     # teacher demand
     # -----------------------------
 
     teacher_subject={}
     teacher_unavailable={}
+    teacher_discouraged={}
     non_tt={}
     tt={}
 
@@ -800,7 +1065,16 @@ def solve_all_scenarios_cp(
         excluded_subject = _is_excluded_subject(subject, excluded_subject_keywords)
 
         teacher_subject[name]=subject
-        teacher_unavailable[name]=set(t.get("unavailable_slots",[]))
+        teacher_unavailable[name]={
+            str(slot).strip()
+            for slot in t.get("unavailable_slots",[])
+            if str(slot).strip()
+        }
+        teacher_discouraged[name]={
+            str(slot).strip()
+            for slot in t.get("discouraged_slots",[])
+            if str(slot).strip() and str(slot).strip() not in teacher_unavailable[name]
+        }
 
         for ca in t["class_assignments"]:
 
@@ -822,6 +1096,8 @@ def solve_all_scenarios_cp(
 
                 non_tt[key]=non_tt.get(key,0)+hours
 
+    _emit_progress(4, "教員需要を集計中")
+
     # -----------------------------
     # class subject hours
     # -----------------------------
@@ -838,9 +1114,11 @@ def solve_all_scenarios_cp(
 
     solved={}
 
-    for sc in scenarios:
+    for idx, sc in enumerate(scenarios):
 
         sid=sc["id"]
+
+        _scenario_progress(idx, sid, 6, "固定配置を読み込み中")
 
         log_file.write("\n==============================\n")
         log_file.write("SCENARIO:" + str(sid) + "\n")
@@ -854,7 +1132,8 @@ def solve_all_scenarios_cp(
 
         log_file.write("FIXED LESSONS:" + str(len(fixed)) + "\n")
 
-        # 固定入力後の空きコマ数と、TTを除く担当コマ数がクラスごとに一致するかを先に検証。
+        # 分散目的の構築より先に、固定入力後の空きコマ数を最初に検証する。
+        _scenario_progress(idx, sid, 8, "空きコマ数を確認中")
         mismatches = _find_class_open_slot_mismatches(
             classes=classes,
             slots=slots,
@@ -876,6 +1155,32 @@ def solve_all_scenarios_cp(
                 [f"- {c}において、教員タブでの授業の指定数は{demand}ですが、空きコマが{free}あります。" for c, demand, free in mismatches]
             )
             raise SchedulerError("\n".join(lines))
+
+        _scenario_progress(idx, sid, 12, "固定コマと教員不可コマの整合を確認中")
+        fixed_teacher_assignments, fixed_teacher_issues = _assign_fixed_lessons_to_non_tt_teachers(
+            non_tt=non_tt,
+            fixed_raw=fixed_raw,
+            teacher_unavailable=teacher_unavailable,
+            teacher_discouraged=teacher_discouraged,
+            time_limit_sec=time_limit_sec,
+        )
+        if fixed_teacher_issues:
+            log_file.write("\nFIXED TEACHER VALIDATION (NG)\n")
+            for line in fixed_teacher_issues:
+                log_file.write(line + "\n")
+            log_file.close()
+            lines = [
+                f"{sid}: 固定コマが教員の不可コマ条件と両立しません。",
+                "不可コマは絶対条件です。固定配置を見直してください。",
+            ]
+            lines.extend(fixed_teacher_issues)
+            raise SchedulerError("\n".join(lines))
+        fixed_teacher_busy, fixed_main_h, fixed_teacher_day_load = _build_fixed_teacher_usage(fixed_teacher_assignments)
+        log_file.write("FIXED MAIN TEACHER ASSIGNMENTS:" + str(len(fixed_teacher_assignments)) + "\n")
+        for (c, t), teacher in sorted(fixed_teacher_assignments.items()):
+            log_file.write(f"FIXED TEACHER: {c} {t} {teacher}\n")
+
+        _scenario_progress(idx, sid, 16, "教科候補を整理中")
 
         # -----------------------------
         # auto exempt
@@ -928,13 +1233,15 @@ def solve_all_scenarios_cp(
         # MODEL
         # -----------------------------
 
-        model=cp_model.CpModel()
+        _scenario_progress(idx, sid, 26, "CP-SATモデルを構築中（授業枠）")
+
+        model: Any = cp_model.CpModel()
 
         # -----------------------------
         # VARIABLES
         # -----------------------------
 
-        x={}
+        x: dict[tuple[str, str, str], Any] = {}
 
         for c in classes:
             for t in slots:
@@ -1050,7 +1357,9 @@ def solve_all_scenarios_cp(
         # TEACHER VARIABLES
         # -----------------------------
 
-        y={}
+        _scenario_progress(idx, sid, 44, "CP-SATモデルを構築中（教員割当）")
+
+        y: dict[tuple[str, str, str], Any] = {}
         teachers_used=sorted({k for (k,_c,_s) in non_tt})
 
         for (k,c,s),_ in non_tt.items():
@@ -1126,6 +1435,14 @@ def solve_all_scenarios_cp(
 
                     model.Add(sum(vars_t)<=1)
 
+                if t in fixed_teacher_busy.get(k,set()) and vars_t:
+
+                    model.Add(sum(vars_t)==0)
+
+                if t in teacher_unavailable.get(k,set()) and vars_t:
+
+                    model.Add(sum(vars_t)==0)
+
         # -----------------------------
         # TEACHER HOURS
         # -----------------------------
@@ -1146,19 +1463,29 @@ def solve_all_scenarios_cp(
 
         for (k,c),h in main_h.items():
 
+            target = h - fixed_main_h.get((k,c),0)
+
+            if target<0:
+
+                raise SchedulerError(
+                    f"固定配置が主担当時数を超過: {k} {c} fixed={fixed_main_h.get((k,c),0)} > demand={h}"
+                )
+
             vars_kc=[
                 y[(k,c,t)]
                 for t in slots
                 if (k,c,t) in y
             ]
 
-            model.Add(sum(vars_kc)==h)
+            model.Add(sum(vars_kc)==target)
 
         # -----------------------------
         # TT VARIABLES / CONSTRAINTS
         # -----------------------------
 
-        z={}
+        _scenario_progress(idx, sid, 62, "CP-SATモデルを構築中（TT制約）")
+
+        z: dict[tuple[str, str, str], Any] = {}
 
         for (k,c,s),h in tt.items():
             if h<=0:
@@ -1189,6 +1516,8 @@ def solve_all_scenarios_cp(
                 )
                 if vars_t:
                     model.Add(sum(vars_t) <= 1)
+                if t in fixed_teacher_busy.get(k,set()) and vars_t:
+                    model.Add(sum(vars_t) == 0)
 
         # TT時間は要求時間を上限とし、過剰に割り当てない。
         for (k,c,_s),h in tt.items():
@@ -1200,9 +1529,44 @@ def solve_all_scenarios_cp(
             if vars_kc:
                 model.Add(sum(vars_kc) <= int(h))
 
-        # 可能な範囲でTT割当を最大化する（不可な場合は不足を許容）。
+        _scenario_progress(idx, sid, 72, "CP-SATモデルを構築中（曜日別担当分散）")
+        teacher_day_load, variance_expr, variance_upper_bound = _build_teacher_day_variance_objective_terms(
+            model=model,
+            classes=classes,
+            slots=slots,
+            teachers=all_teachers,
+            y=y,
+            z=z,
+            fixed_teacher_day_load=fixed_teacher_day_load,
+        )
+
+        discouraged_terms = [
+            var
+            for (k, _c, t), var in y.items()
+            if t in teacher_discouraged.get(k, set())
+        ]
+        discouraged_terms.extend(
+            var
+            for (k, _c, t), var in z.items()
+            if t in teacher_discouraged.get(k, set())
+        )
+        discouraged_expr = cp_model.LinearExpr.Sum(discouraged_terms) if discouraged_terms else 0
+        discouraged_upper_bound = len(discouraged_terms)
+
+        # 優先順位:
+        # 1. TT割当最大化
+        # 2. △コマ割当最小化
+        # 3. 曜日別担当時数分散最小化
+        soft_weight = variance_upper_bound + 1
         if z:
-            model.Maximize(sum(z.values()))
+            tt_weight = soft_weight * (discouraged_upper_bound + 1)
+            model.Maximize(tt_weight * sum(z.values()) - soft_weight * discouraged_expr - variance_expr)
+        else:
+            tt_weight = None
+            if discouraged_terms:
+                model.Minimize(soft_weight * discouraged_expr + variance_expr)
+            else:
+                model.Minimize(variance_expr)
 
         # -----------------------------
         # SOLVER
@@ -1217,14 +1581,29 @@ def solve_all_scenarios_cp(
 
         log_file.write("\nMODEL STATS\n")
         log_file.write(model.ModelStats() + "\n")
+        log_file.write("\nOBJECTIVE\n")
+        if z:
+            log_file.write(
+                "lexicographic-like: maximize(TT * " + str(tt_weight) + " - discouraged * " + str(soft_weight) + " - scaled_variance)\n"
+            )
+        else:
+            if discouraged_terms:
+                log_file.write("minimize(discouraged * " + str(soft_weight) + " + scaled_variance)\n")
+            else:
+                log_file.write("minimize(scaled_variance)\n")
+        log_file.write("discouraged_term_count=" + str(discouraged_upper_bound) + "\n")
+        log_file.write("scaled_variance_upper_bound=" + str(variance_upper_bound) + "\n")
 
         log_file.write("\nSTART SOLVING...\n\n")
+
+        _scenario_progress(idx, sid, 82, "解探索中（制約を探索しています）")
 
         status=solver.Solve(model)
 
         log_file.write("SOLVER STATUS:" + solver.StatusName(status) + "\n")
 
         if status not in (cp_model.OPTIMAL,cp_model.FEASIBLE):
+            _scenario_progress(idx, sid, 90, "解なし診断を作成中")
             log_file.write("\nDEBUG: MODEL UNSAT\n")
             diagnostics = _diagnose_structural_conflicts(
                 classes=classes,
@@ -1337,6 +1716,32 @@ def solve_all_scenarios_cp(
             raise SchedulerError("\n".join(lines))
 
         log_file.write("SOLUTION FOUND\n")
+        _scenario_progress(idx, sid, 93, "解を整理中（曜日別担当を集計）")
+        total_tt_assigned = sum(solver.Value(var) for var in z.values()) if z else 0
+        discouraged_value = sum(
+            1
+            for (c, slot), teacher in fixed_teacher_assignments.items()
+            if slot in teacher_discouraged.get(teacher, set())
+        )
+        discouraged_value += sum(
+            solver.Value(var)
+            for (k, _c, t), var in y.items()
+            if t in teacher_discouraged.get(k, set())
+        )
+        discouraged_value += sum(
+            solver.Value(var)
+            for (k, _c, t), var in z.items()
+            if t in teacher_discouraged.get(k, set())
+        )
+        scaled_variance_value = 0
+        log_file.write("\nTEACHER DAY LOADS\n")
+        for k in all_teachers:
+            day_loads = [solver.Value(teacher_day_load[(k, d)]) for d in DAY_ORDER]
+            scaled_variance_value += len(DAY_ORDER) * sum(v * v for v in day_loads) - (sum(day_loads) ** 2)
+            log_file.write(f"{k}: {dict(zip(DAY_ORDER, day_loads))}\n")
+        log_file.write(f"TOTAL TT ASSIGNED: {total_tt_assigned}\n")
+        log_file.write(f"DISCOURAGED SLOT ASSIGNMENTS: {discouraged_value}\n")
+        log_file.write(f"SCALED VARIANCE: {scaled_variance_value}\n")
 
         # デバッグ: 変数値の確認
         log_file.write("\nDEBUG: VARIABLE VALUES\n")
@@ -1345,6 +1750,7 @@ def solve_all_scenarios_cp(
             log_file.write(f"x[{c},{t},{s}] = {val} (type: {type(val)})\n")
 
         # 教科割り当ての抽出
+        _scenario_progress(idx, sid, 96, "解を反映中（授業・教員割当）")
         assignments = {}
         for (c, t, s), var in x.items():
             val = solver.Value(var)
@@ -1354,6 +1760,7 @@ def solve_all_scenarios_cp(
 
         # 教師割り当ての抽出
         teacher_assignments = {}
+        teacher_assignments.update(fixed_teacher_assignments)
         for (k, c, t), var in y.items():
             val = solver.Value(var)
             if val == 1 or val >= 0.99:
@@ -1377,7 +1784,10 @@ def solve_all_scenarios_cp(
             "tt_assignments": tt_assignments,
         }
 
+        _scenario_progress(idx, sid, 100, "シナリオ完了")
+
 
     log_file.close()
+    _emit_progress(100, "全シナリオ完了")
     return solved
 
