@@ -1,15 +1,13 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import queue
-import re
 import threading
 import tkinter as tk
-import xml.etree.ElementTree as ET
 import sys
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
-from zipfile import ZipFile
+from typing import Any, TypedDict, cast
 
 import ttkbootstrap as tb
 
@@ -68,6 +66,11 @@ DAY_SEPARATOR_COLOR = "#000000"
 DAY_SEPARATOR_WIDTH = 3
 EMPTY_TUE_THU_COLOR = "#f2f2f2"
 MATRIX_CELL_WIDTH = 4
+UNAVAIL_MARK_ORDER = ["", "✕", "△"]
+UNAVAIL_HARD_MARK = "✕"
+UNAVAIL_SOFT_MARK = "△"
+UNAVAIL_HARD_COLOR = "#fde2e2"
+UNAVAIL_SOFT_COLOR = "#fafad2"
 TT_HIGHLIGHT_BORDER_COLOR = "#d32f2f"
 TT_DEFAULT_BORDER_COLOR = "#000000"
 TT_HIGHLIGHT_BORDER_WIDTH = 2
@@ -97,6 +100,21 @@ def join_csv(values: list[str]) -> str:
     return ", ".join(values)
 
 
+class ExcelVariantDefault(TypedDict):
+    onbi_start_music: bool | None
+    tech_subject: str
+
+
+class ExcelVariantOverrides(TypedDict):
+    onbi_start_music: bool | None
+    tech_subject: str
+    onbi_overrides: dict[str, str]
+    tech_overrides: dict[str, str]
+
+
+EntryGridWidget = tk.Entry | ttk.Combobox
+
+
 class EntryTableGrid(ttk.Frame):
     def __init__(
         self,
@@ -111,10 +129,10 @@ class EntryTableGrid(ttk.Frame):
         self.columns = columns
         self.rows = rows
         self.cell_width = cell_width
-        self.dropdown_values = dropdown_values or {}
+        self.dropdown_values: dict[str, list[str]] = dict(dropdown_values or {})
         self.vars: list[list[tk.StringVar]] = []
-        self.widgets: list[list[tk.Widget]] = []
-        self.cell_widgets: dict[tuple[int, int], tk.Widget] = {}
+        self.widgets: list[list[Any]] = []
+        self.cell_widgets: dict[tuple[int, int], Any] = {}
         self.combo_style_name = "TeacherGrid.TCombobox"
         st = ttk.Style()
         st.configure(self.combo_style_name, fieldbackground="white", background="white", foreground="black")
@@ -202,11 +220,12 @@ class EntryTableGrid(ttk.Frame):
 
         for r in range(self.rows):
             row_vars: list[tk.StringVar] = []
-            row_widgets: list[tk.Widget] = []
+            row_widgets: list[Any] = []
             for c in range(len(self.columns)):
                 v = tk.StringVar(value="")
                 row_vars.append(v)
                 key, _ = self.columns[c]
+                w: Any
                 if key in self.dropdown_values:
                     w = ttk.Combobox(
                         self.grid_frame,
@@ -239,21 +258,21 @@ class EntryTableGrid(ttk.Frame):
                 self.cell_widgets[(r, c)] = w
                 self._bind_arrow_nav(w, r, c)
             self.vars.append(row_vars)
-            self.widgets.append(row_widgets)
+            self.widgets.append(cast(list[Any], row_widgets))
 
-    def set_rows(self, rows: list[dict]) -> None:
-        if len(rows) > self.rows:
-            self.rows = len(rows)
+    def set_rows(self, data_rows: list[dict[str, object]]) -> None:
+        if len(data_rows) > self.rows:
+            self.rows = len(data_rows)
             self._build_grid()
         for r in range(self.rows):
             for c in range(len(self.columns)):
                 self.vars[r][c].set("")
-        for r, row in enumerate(rows[: self.rows]):
+        for r, row in enumerate(data_rows[: self.rows]):
             for c, (key, _label) in enumerate(self.columns):
                 self.vars[r][c].set(str(row.get(key, "")))
 
-    def get_rows(self, drop_empty: bool = True) -> list[dict]:
-        out = []
+    def get_rows(self, drop_empty: bool = True) -> list[dict[str, str]]:
+        out: list[dict[str, str]] = []
         for r in range(self.rows):
             row: dict[str, str] = {}
             for c, (key, _label) in enumerate(self.columns):
@@ -289,7 +308,7 @@ class EntryTableGrid(ttk.Frame):
         w = self.cell_widgets.get((r, c))
         if w is not None:
             w.focus_set()
-            self._ensure_visible(w)
+            self._ensure_visible(cast(tk.Widget, w))
         return "break"
 
     def _ensure_visible(self, widget: tk.Widget) -> None:
@@ -310,28 +329,6 @@ class EntryTableGrid(ttk.Frame):
             self.canvas.yview_moveto(max(0.0, wy / ch))
         elif wy + wh > vy1:
             self.canvas.yview_moveto(max(0.0, (wy + wh - self.canvas.winfo_height()) / ch))
-
-    def dump_cells(self) -> dict[tuple[str, str], tuple[str, bool]]:
-        out: dict[tuple[str, str], tuple[str, bool]] = {}
-        for key, var in self.vars.items():
-            hours = var.get().strip()
-            tt = key in self.tt_marks
-            if hours or tt:
-                out[key] = (hours, tt)
-        return out
-
-    def set_cells(self, data: dict[tuple[str, str], tuple[str, bool]]) -> None:
-        for key, var in self.vars.items():
-            var.set("")
-        self.tt_marks.clear()
-        for key, (hours, tt) in data.items():
-            if key in self.vars:
-                self.vars[key].set(hours)
-                if tt:
-                    self.tt_marks.add(key)
-        for key in self.entries:
-            self._apply_cell_style(key)
-
 
 class TimetableMatrixGrid(ttk.Frame):
     _instance_seq = 0
@@ -360,7 +357,7 @@ class TimetableMatrixGrid(ttk.Frame):
         self.slot_keys = self._build_slot_keys()
         self.vars: dict[tuple[str, str], tk.StringVar] = {}
         self.cell_widgets: dict[tuple[int, int], tk.Widget] = {}
-        self.key_widgets: dict[tuple[str, str], tk.Widget] = {}
+        self.key_widgets: dict[tuple[str, str], tk.Entry] = {}
         self.combo_styles: dict[tk.Widget, str] = {}
         self.subject_values = list(subject_values or [])
         self.subject_colors = dict(subject_colors or {})
@@ -525,10 +522,16 @@ class TimetableMatrixGrid(ttk.Frame):
                         self.key_widgets[(cls, slot)] = ent
                         self._bind_arrow_nav(ent, logical_row, logical_col)
 
-                        def _toggle(_evt, key=(cls, slot)):
+                        def _toggle(_evt, key=(cls, slot), widget=ent):
+                            self._ensure_visible(widget)
                             cur = self.vars[key].get().strip()
-                            self.vars[key].set("" if cur else "✕")
+                            try:
+                                idx = UNAVAIL_MARK_ORDER.index(cur)
+                            except ValueError:
+                                idx = 0
+                            self.vars[key].set(UNAVAIL_MARK_ORDER[(idx + 1) % len(UNAVAIL_MARK_ORDER)])
                             self._apply_x_cell_color(key)
+                            return "break"
 
                         ent.bind("<Button-1>", _toggle)
                     elif self.subject_values:
@@ -616,8 +619,6 @@ class TimetableMatrixGrid(ttk.Frame):
     def set_row_labels(self, row_labels: list[str]) -> None:
         self.set_layout(row_labels=row_labels)
 
-    def set_day_periods(self, day_periods: dict[str, int]) -> None:
-        self.set_layout(day_periods=day_periods)
 
     def set_layout(
         self,
@@ -706,19 +707,31 @@ class TimetableMatrixGrid(ttk.Frame):
                 out.append({"class": cls, "slot": slot, "subject": text})
         return out
 
-    def set_x_marks(self, marks: set[tuple[str, str]]) -> None:
+    def set_click_marks(self, marks: dict[tuple[str, str], str]) -> None:
         self.clear()
-        for key in marks:
-            if key in self.vars:
-                self.vars[key].set("✕")
+        for key, mark in marks.items():
+            normalized = str(mark).strip()
+            if key in self.vars and normalized in {UNAVAIL_HARD_MARK, UNAVAIL_SOFT_MARK}:
+                self.vars[key].set(normalized)
                 self._apply_x_cell_color(key)
 
-    def dump_x_marks(self) -> set[tuple[str, str]]:
-        out: set[tuple[str, str]] = set()
+    def dump_click_marks(self) -> dict[tuple[str, str], str]:
+        out: dict[tuple[str, str], str] = {}
         for key, var in self.vars.items():
-            if var.get().strip() == "✕":
-                out.add(key)
+            mark = var.get().strip()
+            if mark in {UNAVAIL_HARD_MARK, UNAVAIL_SOFT_MARK}:
+                out[key] = mark
         return out
+
+    def set_x_marks(self, marks: set[tuple[str, str]]) -> None:
+        self.set_click_marks({key: UNAVAIL_HARD_MARK for key in marks})
+
+    def dump_x_marks(self) -> set[tuple[str, str]]:
+        return {
+            key
+            for key, mark in self.dump_click_marks().items()
+            if mark == UNAVAIL_HARD_MARK
+        }
 
     def set_tt_highlights(self, marks: set[tuple[str, str]]) -> None:
         self.tt_highlight_keys = {key for key in marks if key in self.vars}
@@ -732,20 +745,29 @@ class TimetableMatrixGrid(ttk.Frame):
         day = slot.split("-", 1)[0] if slot else ""
         return EMPTY_TUE_THU_COLOR if day in {"Tue", "Thu"} else "#ffffff"
 
+    @staticmethod
+    def _set_entry_widget_color(widget: tk.Entry, color: str, readonly: bool = False) -> None:
+        widget.configure(bg=color)
+        if readonly:
+            widget.configure(readonlybackground=color)
+
+    @staticmethod
+    def _set_label_widget_color(widget: tk.Label, color: str) -> None:
+        widget.configure(bg=color, highlightbackground="#000000")
+
     def _apply_x_cell_color(self, key: tuple[str, str]) -> None:
         w = self.key_widgets.get(key)
         if w is None:
             return
         cls, slot = key
-        is_x = self.vars.get((cls, slot)).get().strip() == "✕" if (cls, slot) in self.vars else False
-        color = "#fde2e2" if is_x else self._resolve_empty_cell_color(slot)  # ✕は薄赤、空セルは曜日で既定色
-        try:
-            w.configure(bg=color, readonlybackground=color)
-        except Exception:
-            try:
-                w.configure(bg=color)
-            except Exception:
-                pass
+        mark = self.vars.get((cls, slot)).get().strip() if (cls, slot) in self.vars else ""
+        if mark == UNAVAIL_HARD_MARK:
+            color = UNAVAIL_HARD_COLOR
+        elif mark == UNAVAIL_SOFT_MARK:
+            color = UNAVAIL_SOFT_COLOR
+        else:
+            color = self._resolve_empty_cell_color(slot)
+        self._set_entry_widget_color(w, color, readonly=True)
 
     def _apply_subject_cell_color(self, key: tuple[str, str]) -> None:
         if self.click_x_only:
@@ -782,13 +804,12 @@ class TimetableMatrixGrid(ttk.Frame):
                         selectforeground=[("readonly", "black"), ("focus", "black"), ("active", "black")],
                     )
                     widget.configure(style=style_name)
-            else:
-                widget.configure(bg=color, activebackground=color, highlightbackground="#000000", highlightcolor="#000000", highlightthickness=1)
+            elif isinstance(widget, tk.Entry):
+                widget.configure(bg=color, highlightbackground="#000000", highlightcolor="#000000", highlightthickness=1)
+            elif isinstance(widget, tk.Label):
+                self._set_label_widget_color(widget, color)
         except Exception:
-            try:
-                widget.configure(bg=color)
-            except Exception:
-                pass
+            pass
 
     def _bind_arrow_nav(self, widget: tk.Widget, r: int, c: int) -> None:
         widget.bind("<Up>", lambda e, rr=r, cc=c: self._move_focus(rr - 1, cc))
@@ -1014,92 +1035,6 @@ class ClassAssignGrid(ttk.Frame):
             self._apply_cell_style(key)
 
 
-class ScenarioFrame(ttk.Frame):
-    def __init__(
-        self,
-        parent: tk.Misc,
-        scenario_id: str,
-        title: str,
-        classes: list[str],
-        day_periods: dict[str, int],
-    ):
-        super().__init__(parent, padding=6)
-        self.scenario_id = scenario_id
-        self.classes = list(classes)
-        self.day_periods = dict(day_periods)
-
-        ttk.Label(self, text=title).pack(anchor="w")
-        pan = ttk.Panedwindow(self, orient="vertical")
-        pan.pack(fill="both", expand=True)
-
-        f1 = ttk.Frame(pan, padding=4)
-        f2 = ttk.Frame(pan, padding=4)
-        f3 = ttk.Frame(pan, padding=4)
-        pan.add(f1, weight=1)
-        pan.add(f2, weight=3)
-        pan.add(f3, weight=3)
-
-        self.tbl_weekly = EntryTableGrid(
-            f1,
-            "週時数（PDF入力）",
-            [("class", "クラス"), ("subject", "教科"), ("hours", "週時数")],
-            rows=260,
-            cell_width=10,
-        )
-        self.grid_fixed = TimetableMatrixGrid(
-            f2, "固定教科入力（予備シート形式）", self.classes, click_x_only=False, day_periods=self.day_periods
-        )
-        self.grid_manual = TimetableMatrixGrid(
-            f3, "技能系手入力（予備シート形式）", self.classes, click_x_only=False, day_periods=self.day_periods
-        )
-
-        self.tbl_weekly.pack(fill="both", expand=True)
-        self.grid_fixed.pack(fill="both", expand=True)
-        self.grid_manual.pack(fill="both", expand=True)
-        self.grid_manual.pack(fill="both", expand=True)
-
-    def set_classes(self, classes: list[str]) -> None:
-        self.classes = list(classes)
-        self.grid_fixed.set_row_labels(classes)
-        self.grid_manual.set_row_labels(classes)
-
-    def set_day_periods(self, day_periods: dict[str, int]) -> None:
-        self.day_periods = dict(day_periods)
-        self.grid_fixed.set_day_periods(day_periods)
-        self.grid_manual.set_day_periods(day_periods)
-
-    def load(self, sc: dict) -> None:
-        wr_rows = []
-        for c, subject_map in sc.get("weekly_requirements", {}).items():
-            for subject, hours in subject_map.items():
-                wr_rows.append({"class": c, "subject": subject, "hours": str(hours)})
-        self.tbl_weekly.set_rows(wr_rows)
-        self.grid_fixed.set_from_assignments(sc.get("fixed_assignments", []))
-        self.grid_manual.set_from_assignments(sc.get("manual_skill_assignments", []))
-
-    def dump(self) -> dict:
-        wr: dict[str, dict[str, float]] = {}
-        for r in self.tbl_weekly.get_rows(drop_empty=True):
-            c = r["class"].strip()
-            s = r["subject"].strip()
-            h = r["hours"].strip()
-            if not c or not s or not h:
-                continue
-            try:
-                hv = float(h)
-            except ValueError:
-                continue
-            wr.setdefault(c, {})[s] = hv
-
-        return {
-            "id": self.scenario_id,
-            "target_block": _scenario_id_to_block(self.scenario_id),
-            "weekly_requirements": wr,
-            "fixed_assignments": self.grid_fixed.dump_assignments(),
-            "manual_skill_assignments": self.grid_manual.dump_assignments(),
-        }
-
-
 class TimetableGUI(tb.Window):
     def __init__(self) -> None:
         super().__init__(themename="flatly")
@@ -1125,7 +1060,7 @@ class TimetableGUI(tb.Window):
     def _resource_path(self, relative_path: str) -> Path:
         base = getattr(sys, "_MEIPASS", None)
         if base:
-            return Path(base) / relative_path
+            return Path(str(base)) / relative_path
         return Path(__file__).resolve().parent / relative_path
 
     def _apply_window_icon(self) -> None:
@@ -1143,31 +1078,10 @@ class TimetableGUI(tb.Window):
         # テーマのデフォルト配色を使用する
         tb.Style()
 
-    def _set_startup_message(self, message: str) -> None:
-        if self._startup_splash is None:
-            return
-        if self._startup_message_var is not None:
-            self._startup_message_var.set(str(message).strip() or "初期化中...")
-        self._startup_splash.update_idletasks()
-
-    def _close_startup_splash(self) -> None:
-        if self._startup_progress is not None:
-            try:
-                self._startup_progress.stop()
-            except Exception:
-                pass
-            self._startup_progress = None
-        if self._startup_splash is not None:
-            try:
-                self._startup_splash.destroy()
-            except Exception:
-                pass
-            self._startup_splash = None
-
     def default_config(self) -> dict:
         return {
             "year": 6,
-            "output_path": "./output/timetable.xlsx",
+            "output_path": "./output/時間割.xlsx",
             "seed": 42,
             "subjects": list(DEFAULT_SUBJECTS),
             "classes": ["1-1", "1-2", "1-3", "1-4", "2-1", "2-2", "2-3", "2-4", "3-1", "3-2", "3-3"],
@@ -1218,9 +1132,6 @@ class TimetableGUI(tb.Window):
     def _ensure_data_tabs_built(self) -> None:
         self._ensure_tabs_built("teachers", "skill_input", "other_assign")
 
-    def _ensure_all_tabs_built(self) -> None:
-        self._ensure_data_tabs_built()
-        self._ensure_tabs_built("confirm")
 
     def _on_notebook_tab_changed(self, _event=None) -> None:
         current = self.nb.select()
@@ -1337,7 +1248,7 @@ class TimetableGUI(tb.Window):
 
         self.tbl_teachers = EntryTableGrid(
             f1,
-            "教員名・担当教科（苗字重複葉登録不可）",
+            "教員名・担当教科（苗字の重複は登録不可）",
             [("name", "教員名"), ("subject", "担当教科")],
             rows=240,
             cell_width=10,
@@ -1347,7 +1258,7 @@ class TimetableGUI(tb.Window):
 
         self.grid_teacher_unavail = TimetableMatrixGrid(
             f2,
-            "教員の不可コマ（クリックで✕を入れる）",
+            "教員の不可/回避希望コマ（クリックで 空白→✕→△→空白）",
             row_labels=[],
             click_x_only=True,
             day_periods=day_periods,
@@ -1358,7 +1269,7 @@ class TimetableGUI(tb.Window):
 
         self.grid_teacher_class = ClassAssignGrid(
             f3,
-            "担当クラス（時間数を数字入力。セルクリックでTT=背景色薄青",
+            "担当クラス（時間数を数字入力。セルクリックでTT=背景色薄青、美術・音楽はコマ数入力不要）",
             row_labels=[],
             col_labels=[],
         )
@@ -1427,7 +1338,7 @@ class TimetableGUI(tb.Window):
         ttk.Label(f1, text="１年音美").pack(anchor="w")
         self.other_upper_grid = TimetableMatrixGrid(
             f1,
-            "各クラス × 曜日 × 時間数（読み取り専用）",
+            "（読み取り専用）",
             row_labels=current_classes,
             day_periods=day_periods,
             readonly=True,
@@ -1441,7 +1352,7 @@ class TimetableGUI(tb.Window):
         ttk.Label(f2, text="１年総合").pack(anchor="w")
         self.other_lower_grid = TimetableMatrixGrid(
             f2,
-            "各クラス × 曜日 × 時間数（読み取り専用）",
+            "（読み取り専用）",
             row_labels=current_classes,
             day_periods=day_periods,
             readonly=True,
@@ -1601,7 +1512,7 @@ class TimetableGUI(tb.Window):
             self.prg_assign.configure(value=0)
             self.prg_assign.configure(mode="indeterminate")
             self.prg_assign.start(12)
-            self.var_assign_progress_text.set("開始準備中...（探索中）")
+            self.var_assign_progress_text.set("開始準備中...（入力確認）")
             self.update_idletasks()
 
             # 提案探索条件はGUI入力を廃止し、従来の既定値で固定運用
@@ -1638,7 +1549,7 @@ class TimetableGUI(tb.Window):
                         self._assign_queue.put(("error", f"予期しないエラー: {e}", ""))
 
             threading.Thread(target=_worker, daemon=True).start()
-            self.after(80, self._poll_assign_queue)
+            self.after(80, self._poll_assign_queue, None)
         except Exception as e:
             self.prg_assign.stop()
             self.prg_assign.configure(mode="determinate", value=0)
@@ -1650,16 +1561,16 @@ class TimetableGUI(tb.Window):
         try:
             day, per = slot.split("-", 1)
             day_idx = DAY_ORDER.index(day) if day in DAY_ORDER else len(DAY_ORDER)
-            return (day_idx, int(per), slot)
+            return day_idx, int(per), slot
         except Exception:
-            return (len(DAY_ORDER), 99, slot)
+            return len(DAY_ORDER), 99, slot
 
     @staticmethod
     def _class_sort_key(cls: str) -> tuple[int, int, str]:
         parts = cls.split("-", 1)
         if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
-            return (int(parts[0]), int(parts[1]), cls)
-        return (99, 99, cls)
+            return int(parts[0]), int(parts[1]), cls
+        return 99, 99, cls
 
     def _get_solved_block_data(self, solved: dict, candidates: list[str]) -> dict:
         for sid_candidate in candidates:
@@ -1810,7 +1721,7 @@ class TimetableGUI(tb.Window):
 
         return tt_marks, unmet
 
-    def _poll_assign_queue(self) -> None:
+    def _poll_assign_queue(self, _unused=None) -> None:
         if not self._assign_running or self._assign_queue is None:
             return
         keep_poll = True
@@ -1919,7 +1830,7 @@ class TimetableGUI(tb.Window):
             pass
 
         if keep_poll and self._assign_running:
-            self.after(80, self._poll_assign_queue)
+            self.after(80, self._poll_assign_queue, None)
 
     def confirm_teacher_names(self) -> None:
         teacher_names = [r["name"].strip() for r in self.tbl_teachers.get_rows(drop_empty=True) if r["name"].strip()]
@@ -1965,14 +1876,20 @@ class TimetableGUI(tb.Window):
 
         _pg(62, "JSON読込: 教員データ反映")
         teacher_rows = []
-        teacher_marks: set[tuple[str, str]] = set()
+        teacher_marks: dict[tuple[str, str], str] = {}
         teacher_class_cells: dict[tuple[str, str], tuple[str, bool]] = {}
         for t in d.get("teachers", []):
             subj_list = t.get("subjects", [])
             teacher_rows.append({"name": t.get("name", ""), "subject": (subj_list[0] if subj_list else "")})
             name = t.get("name", "").strip()
+            for slot in t.get("discouraged_slots", []):
+                slot = str(slot).strip()
+                if name and slot:
+                    teacher_marks[(name, slot)] = UNAVAIL_SOFT_MARK
             for slot in t.get("unavailable_slots", []):
-                teacher_marks.add((name, slot))
+                slot = str(slot).strip()
+                if name and slot:
+                    teacher_marks[(name, slot)] = UNAVAIL_HARD_MARK
             if t.get("class_assignments"):
                 for ca in t.get("class_assignments", []):
                     cls = ca.get("class", "").strip()
@@ -1988,7 +1905,7 @@ class TimetableGUI(tb.Window):
 
         _pg(75, "JSON読込: タブ同期")
         self._sync_matrix_labels()
-        self.grid_teacher_unavail.set_x_marks(teacher_marks)
+        self.grid_teacher_unavail.set_click_marks(teacher_marks)
         self.grid_teacher_class.set_cells(teacher_class_cells)
         sc_up = self._get_scenario(SCENARIO_ID_UPPER)
         sc_lo = self._get_scenario(SCENARIO_ID_LOWER)
@@ -2000,13 +1917,15 @@ class TimetableGUI(tb.Window):
             cleaned: list[dict] = []
             marks: set[tuple[str, str]] = set()
             for a in assignments:
-                cls = a.get("class")
-                slot = a.get("slot")
+                cls = str(a.get("class", "")).strip()
+                slot = str(a.get("slot", "")).strip()
                 subj = str(a.get("subject", "")).strip()
                 if subj.endswith("(T)"):
-                    marks.add((cls, slot))
+                    if cls and slot:
+                        marks.add((cls, slot))
                     subj = TimetableMatrixGrid._strip_tt_suffix(subj)
-                cleaned.append({"class": cls, "slot": slot, "subject": subj})
+                if cls and slot:
+                    cleaned.append({"class": cls, "slot": slot, "subject": subj})
             return cleaned, marks
 
         up_fixed, up_marks = _split_tt(sc_up.get("fixed_assignments", []))
@@ -2053,14 +1972,23 @@ class TimetableGUI(tb.Window):
         self._sync_matrix_labels()
 
         teachers = []
-        teacher_x = self.grid_teacher_unavail.dump_x_marks()
+        teacher_marks = self.grid_teacher_unavail.dump_click_marks()
         class_cells = self.grid_teacher_class.dump_cells()
         class_subject_teacher: dict[str, dict[str, str]] = {}
         for r in self.tbl_teachers.get_rows(drop_empty=True):
             name = r["name"].strip()
             if not name:
                 continue
-            slots = sorted(slot for tname, slot in teacher_x if tname == name)
+            unavailable_slots = sorted(
+                slot
+                for (tname, slot), mark in teacher_marks.items()
+                if tname == name and mark == UNAVAIL_HARD_MARK
+            )
+            discouraged_slots = sorted(
+                slot
+                for (tname, slot), mark in teacher_marks.items()
+                if tname == name and mark == UNAVAIL_SOFT_MARK
+            )
             class_assignments = []
             for (tname, cls), (hours_text, tt) in class_cells.items():
                 if tname != name:
@@ -2089,7 +2017,8 @@ class TimetableGUI(tb.Window):
                     "subjects": subjects,
                     "assigned_classes": assigned_classes,
                     "class_assignments": class_assignments,
-                    "unavailable_slots": slots,
+                    "unavailable_slots": unavailable_slots,
+                    "discouraged_slots": discouraged_slots,
                 }
             )
         d["teachers"] = teachers
@@ -2233,7 +2162,7 @@ class TimetableGUI(tb.Window):
         return missing
 
     def _prompt_excel_variant_settings(self) -> dict | None:
-        defaults = {
+        defaults: dict[str, ExcelVariantDefault] = {
             "①": {"onbi_start_music": True, "tech_subject": "技術"},
             "②": {"onbi_start_music": False, "tech_subject": "家庭"},
             "③": {"onbi_start_music": None, "tech_subject": "技術"},
@@ -2241,27 +2170,27 @@ class TimetableGUI(tb.Window):
             "⑤": {"onbi_start_music": False, "tech_subject": "技術"},
             "⑥": {"onbi_start_music": None, "tech_subject": "家庭"},
         }
-        saved = self.config_data.get("excel_variant_settings", {}) or {}
+        saved = cast(dict[str, dict[str, Any]], self.config_data.get("excel_variant_settings", {}) or {})
         for key, cfg in saved.items():
             if key in defaults:
                 if "onbi_start_music" in cfg:
-                    defaults[key]["onbi_start_music"] = cfg["onbi_start_music"]
+                    defaults[key]["onbi_start_music"] = cast(bool | None, cfg["onbi_start_music"])
                 if "tech_subject" in cfg:
-                    defaults[key]["tech_subject"] = cfg["tech_subject"]
+                    defaults[key]["tech_subject"] = str(cfg["tech_subject"])
 
-        classes = self.config_data.get("classes", [])
+        classes = cast(list[str], self.config_data.get("classes", []))
         grade1_classes = [c for c in classes if str(c).startswith("1-")]
         grade1_classes.sort(key=lambda x: self._class_sort_key(x))
 
         def _slot_sort_key(slot: str) -> tuple[int, int]:
             day, p = slot.split("-")
-            return (DAY_ORDER.index(day), int(p))
+            return DAY_ORDER.index(day), int(p)
 
-        def _collect_skill_items(sid: str) -> list[dict]:
+        def _collect_skill_items(sid: str) -> list[dict[str, str]]:
             sc = self._get_scenario(sid)
-            merged: dict[tuple[str, str, str], dict] = {}
+            merged: dict[tuple[str, str, str], dict[str, str]] = {}
 
-            def _add_items(items: list[dict]) -> None:
+            def _add_items(items: list[dict[str, object]]) -> None:
                 for a in items:
                     cls = str(a.get("class", "")).strip()
                     slot = str(a.get("slot", "")).strip()
@@ -2293,19 +2222,13 @@ class TimetableGUI(tb.Window):
                     out[cls] = "美術" if idx % 2 == 0 else "音楽"
             return out
 
-        variants = [
-            {"id": "①", "use_lower": False},
-            {"id": "②", "use_lower": False},
-            {"id": "③", "use_lower": True},
-            {"id": "④", "use_lower": False},
-            {"id": "⑤", "use_lower": False},
-            {"id": "⑥", "use_lower": True},
-        ]
+        variant_ids = ["①", "②", "③", "④", "⑤", "⑥"]
+        lower_variant_ids = {"③", "⑥"}
 
         onbi_options = ["音楽", "美術"]
         tech_options = ["技術", "家庭"]
 
-        result: dict | None = None
+        result: dict[str, ExcelVariantOverrides] | None = None
         win = tk.Toplevel(self)
         win.title("技能科目の扱い")
         win.transient(self)
@@ -2352,9 +2275,8 @@ class TimetableGUI(tb.Window):
 
         override_vars: dict[tuple[str, str, str, str], tk.StringVar] = {}
 
-        for idx, v in enumerate(variants):
-            vid = v["id"]
-            use_lower = v["use_lower"]
+        for idx, vid in enumerate(variant_ids):
+            use_lower = vid in lower_variant_ids
             sc_id = SCENARIO_ID_LOWER if use_lower else SCENARIO_ID_UPPER
             items = _collect_skill_items(sc_id)
             onbi_items = [x for x in items if x["subject"] == "音美"]
@@ -2369,9 +2291,9 @@ class TimetableGUI(tb.Window):
             ttk.Label(frame, text="選択").grid(row=0, column=1, sticky="w")
 
             row_idx = 1
-            saved_cfg = saved.get(vid, {})
-            onbi_overrides = saved_cfg.get("onbi_overrides", {}) or {}
-            tech_overrides = saved_cfg.get("tech_overrides", {}) or {}
+            saved_cfg = cast(dict[str, Any], saved.get(vid, {}) or {})
+            onbi_overrides = cast(dict[str, str], saved_cfg.get("onbi_overrides", {}) or {})
+            tech_overrides = cast(dict[str, str], saved_cfg.get("tech_overrides", {}) or {})
             onbi_default_map = _default_onbi_map(defaults[vid]["onbi_start_music"])
             tech_default = defaults[vid]["tech_subject"]
 
@@ -2390,15 +2312,15 @@ class TimetableGUI(tb.Window):
                 continue
 
             for item in onbi_items:
-                cls = item["class"]
-                slot = item["slot"]
+                cls = str(item["class"])
+                slot = str(item["slot"])
                 key = f"{cls}|{slot}"
                 default_value = onbi_overrides.get(key) or onbi_default_map.get(cls) or "音楽"
                 _add_row(f"{cls} {slot} 音美", onbi_options, default_value, (vid, "音美", cls, slot))
 
             for item in tech_items:
-                cls = item["class"]
-                slot = item["slot"]
+                cls = str(item["class"])
+                slot = str(item["slot"])
                 key = f"{cls}|{slot}"
                 default_value = tech_overrides.get(key) or tech_default
                 _add_row(f"{cls} {slot} 技家", tech_options, default_value, (vid, "技家", cls, slot))
@@ -2408,9 +2330,9 @@ class TimetableGUI(tb.Window):
 
         def _ok() -> None:
             nonlocal result
-            settings: dict[str, dict[str, object]] = {}
-            for vid in ["①", "②", "③", "④", "⑤", "⑥"]:
-                cfg = {
+            settings: dict[str, ExcelVariantOverrides] = {}
+            for vid in variant_ids:
+                cfg: ExcelVariantOverrides = {
                     "onbi_start_music": defaults[vid]["onbi_start_music"],
                     "tech_subject": defaults[vid]["tech_subject"],
                     "onbi_overrides": {},
