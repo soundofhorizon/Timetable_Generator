@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -79,11 +79,11 @@ def grade_of(class_name: str) -> str:
 def _class_sort_key(class_name: str) -> tuple:
     parts = class_name.split("-")
     if len(parts) != 2:
-        return (class_name, 0)
+        return class_name, 0
     try:
-        return (int(parts[0]), int(parts[1]))
+        return int(parts[0]), int(parts[1])
     except ValueError:
-        return (parts[0], parts[1])
+        return parts[0], parts[1]
 
 
 def _normalize_subject_name(subject: str) -> str:
@@ -105,14 +105,6 @@ def _is_skill_subject_name(subject: str, skill_subject_keywords: Set[str]) -> bo
         return True
     return any(keyword in normalized for keyword in skill_subject_keywords)
 
-
-def _subject_group_key(subject: str) -> str | None:
-    normalized = _normalize_subject_name(subject)
-    if normalized in {"音美", "音楽", "美術"}:
-        return "onbi"
-    if normalized in {"技家", "技術", "家庭"}:
-        return "techka"
-    return None
 
 
 def _origin_group_key(origin_subject: str | None) -> str | None:
@@ -308,8 +300,8 @@ class CSPTimetableSolver:
         return any(cnt > 0 for cnt in self.remaining.get(c, {}).values())
 
     def _pick_next_variable(self) -> Optional[Tuple[str, str, List[str]]]:
-        best = None
-        best_domain = None
+        best: Optional[Tuple[str, str]] = None
+        best_domain: Optional[List[str]] = None
         for c, slot in self.variable_slots:
             if slot in self.schedule[c]:
                 continue
@@ -317,15 +309,15 @@ class CSPTimetableSolver:
                 continue
             dom = self._domain(c, slot)
             if not dom:
-                return (c, slot, [])
-            if best is None or len(dom) < len(best_domain):  # type: ignore[arg-type]
+                return c, slot, []
+            if best is None or best_domain is None or len(dom) < len(best_domain):
                 best = (c, slot)
                 best_domain = dom
                 if len(dom) == 1:
                     break
         if best is None:
             return None
-        return (best[0], best[1], best_domain or [])
+        return best[0], best[1], best_domain or []
 
     def _assign(self, c: str, slot: str, subj: str) -> None:
         self.schedule[c][slot] = subj
