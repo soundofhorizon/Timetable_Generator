@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Callable, Optional
@@ -260,7 +260,7 @@ class ScenarioScheduler:
                 if not dom:
                     self.last_dead_end = self._diagnose_empty_domain(c, s)
                     self.last_dead_end_key = (c, s)
-                    return (c, s, [])
+                    return c, s, []
                 # 週4時間など残時数が多い教科を先に処理するため、
                 # ドメイン内の最大残時数を優先し、同点ならMRV(候補最少)。
                 peak = max(self.remaining.get((t, c, subj), 0) for subj, t in dom)
@@ -273,10 +273,10 @@ class ScenarioScheduler:
                     best_domain = dom
                     best_peak = peak
                     if len(dom) == 1:
-                        return (best[0], best[1], best_domain)
+                        return best[0], best[1], dom
         if best is None:
             return None
-        return (best[0], best[1], best_domain or [])
+        return best[0], best[1], best_domain or []
 
     def _assign(self, class_name: str, slot: str, subject: str, teacher: str) -> None:
         self.assigned[(class_name, slot)] = (subject, teacher)
@@ -618,7 +618,7 @@ def suggest_skill_changes(
                 if slot == dead_slot:
                     score += 2
             # 高優先を先頭へ
-            return (-score, len(sp["remove"]) + len(sp["add"]))
+            return -score, len(sp["remove"]) + len(sp["add"])
         specs.sort(key=_priority)
 
     if spec_limit > 0:
