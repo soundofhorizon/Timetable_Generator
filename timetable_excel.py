@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, cast
 
 from timetable_tool import (
     CLASS_ORDER_DEFAULT,
     DAY_JP,
     DAY_ORDER,
-    DAY_START_COL,
     ONBI_FILL_COLOR,
     TECHKA_FILL_COLOR,
     Slot,
@@ -27,8 +26,11 @@ def to_excel_col(n: int) -> str:
     return s
 
 
-def slot_to_col(slot: Slot) -> int:
-    return DAY_START_COL[slot.day] + (slot.period - 1)
+def slot_to_col(slot: Slot, day_periods: Dict[str, int]) -> int:
+    col = _slot_to_column(slot.day, slot.period, day_periods)
+    if col is None:
+        raise ValueError(f"invalid slot: {slot}")
+    return col
 
 
 def row_base_for_block(block: str) -> int:
@@ -39,36 +41,26 @@ def row_base_for_block(block: str) -> int:
     raise ValueError("block must be 'upper' or 'lower'")
 
 
-SHEET_COLUMNS = {
-    "Mon": ["D", "E", "F", "G", "H"],
-    "Tue": ["J", "K", "L", "M", "N", "O"],
-    "Wed": ["P", "Q", "R", "S", "T"],
-    "Thu": ["V", "W", "X", "Y", "Z"],
-    "Fri": ["AA", "AB", "AC", "AD", "AE", "AF"],
-}
-BLOCK_HEIGHT = 49
+SLOT_AREA_START_COL = 4
+SLOT_AREA_END_COL = 32
+RIGHT_LABEL_COL = 33
+RIGHT_AUX_COL = 34
+PREFERRED_GAP_AFTER = ("Mon", "Wed", "Tue", "Thu")
+BLOCK_HEIGHT = 50
+BLOCK_PITCH = BLOCK_HEIGHT + 1
 TEACHER_ROW_START = 4
 TEACHER_ROW_END = 31
 CLASS_ROW_START = 35
-CLASS_ROW_END = 46
-SPECIAL_ROW = 48
-PATROL_ROW = 49
-BOTTOM_ROW = 49
-BLOCK_MERGES = [
+CLASS_ROW_END = 47
+SEPARATOR_ROW = 48
+SPECIAL_ROW = 49
+PATROL_ROW = 50
+BOTTOM_ROW = 50
+STATIC_BLOCK_MERGES = [
     "A1:C1",
     "D1:AH1",
     "A2:C3",
-    "D2:H2",
-    "J2:O2",
-    "P2:T2",
-    "V2:Z2",
-    "AA2:AF2",
     "AG2:AH3",
-    "D33:H33",
-    "J33:O33",
-    "P33:T33",
-    "V33:Z33",
-    "AA33:AF33",
     "A33:C34",
     "AG33:AH34",
     "A35:B35",
@@ -84,43 +76,116 @@ BLOCK_MERGES = [
     "A45:B45",
     "A46:B46",
     "A47:B47",
-    "A48:C48",
-    "AG48:AH48",
     "A49:C49",
     "AG49:AH49",
+    "A50:C50",
+    "AG50:AH50",
 ]
 DAY_LETTERS = {"Mon": "A", "Tue": "B", "Wed": "C", "Thu": "D", "Fri": "E"}
+EXCEL_UNAVAIL_HARD_MARK = "✕"
+EXCEL_UNAVAIL_SOFT_MARK = "△"
+EXCEL_UNAVAIL_HARD_FILL_COLOR = "FDE2E2"
+EXCEL_UNAVAIL_SOFT_FILL_COLOR = "FAFAD2"
 
 
-def _slot_to_column(day: str, period: int) -> int | None:
-    cols = SHEET_COLUMNS.get(day, [])
-    if 1 <= period <= len(cols):
-        from openpyxl.utils import column_index_from_string
+def _normalize_day_periods(day_periods: Dict[str, int]) -> dict[str, int]:
+    normalized: dict[str, int] = {}
+    for day in DAY_ORDER:
+        try:
+            normalized[day] = max(0, int(day_periods.get(day, 0)))
+        except Exception:
+            normalized[day] = 0
+    return normalized
 
-        return column_index_from_string(cols[period - 1])
+
+def _build_sheet_layout(day_periods: Dict[str, int]) -> dict:
+    counts = _normalize_day_periods(day_periods)
+    capacity = SLOT_AREA_END_COL - SLOT_AREA_START_COL + 1
+    total_slots = sum(counts.values())
+    if total_slots > capacity:
+        raise ValueError(
+            f"授業コマ数が多すぎます: {total_slots}コマ（最大 {capacity} コマ）"
+        )
+
+    gap_budget = min(capacity - total_slots, max(0, len(DAY_ORDER) - 1))
+    gap_after = {day: 0 for day in DAY_ORDER}
+    for day in PREFERRED_GAP_AFTER:
+        if gap_budget <= 0:
+            break
+        if counts.get(day, 0) > 0:
+            gap_after[day] = 1
+            gap_budget -= 1
+
+    slot_columns: list[tuple[str, int, int]] = []
+    day_ranges: dict[str, tuple[int, int] | None] = {day: None for day in DAY_ORDER}
+    gap_columns: list[int] = []
+    current_col = SLOT_AREA_START_COL
+
+    for idx, day in enumerate(DAY_ORDER):
+        day_count = counts[day]
+        if day_count > 0:
+            start_col = current_col
+            end_col = start_col + day_count - 1
+            day_ranges[day] = (start_col, end_col)
+            for period in range(1, day_count + 1):
+                slot_columns.append((day, period, start_col + period - 1))
+            current_col = end_col + 1
+
+        if idx < len(DAY_ORDER) - 1 and gap_after.get(day, 0):
+            for _ in range(gap_after[day]):
+                gap_columns.append(current_col)
+                current_col += 1
+
+    return {
+        "counts": counts,
+        "total_slots": total_slots,
+        "slot_columns": slot_columns,
+        "day_ranges": day_ranges,
+        "gap_columns": gap_columns,
+        "slot_area_start_col": SLOT_AREA_START_COL,
+        "slot_area_end_col": SLOT_AREA_END_COL,
+        "right_label_col": RIGHT_LABEL_COL,
+        "right_aux_col": RIGHT_AUX_COL,
+    }
+
+
+def _iter_block_merges(day_periods: Dict[str, int]) -> list[str]:
+    merges = list(STATIC_BLOCK_MERGES)
+    layout = _build_sheet_layout(day_periods)
+    for row in (2, 33):
+        for day in DAY_ORDER:
+            day_range = layout["day_ranges"].get(day)
+            if not day_range:
+                continue
+            start_col, end_col = day_range
+            merges.append(f"{to_excel_col(start_col)}{row}:{to_excel_col(end_col)}{row}")
+    return merges
+
+
+def _slot_to_column(day: str, period: int, day_periods: Dict[str, int]) -> int | None:
+    layout = _build_sheet_layout(day_periods)
+    day_range = layout["day_ranges"].get(day)
+    if not day_range:
+        return None
+    start_col, end_col = day_range
+    if 1 <= period <= (end_col - start_col + 1):
+        return start_col + period - 1
     return None
 
 
 def _iter_slot_columns(day_periods: Dict[str, int]) -> list[tuple[str, int, int]]:
-    slots: list[tuple[str, int, int]] = []
-    for day in DAY_ORDER:
-        max_p = min(int(day_periods.get(day, 0)), len(SHEET_COLUMNS.get(day, [])))
-        for p in range(1, max_p + 1):
-            col = _slot_to_column(day, p)
-            if col is not None:
-                slots.append((day, p, col))
-    return slots
+    return list(_build_sheet_layout(day_periods)["slot_columns"])
 
 
-def _apply_dimensions(ws, slot_width: float, col_c_width: float) -> None:
+def _apply_dimensions(ws, slot_width: float, col_c_width: float, day_periods: Dict[str, int]) -> None:
     from openpyxl.utils import get_column_letter
 
+    layout = _build_sheet_layout(day_periods)
+    gap_letters = {get_column_letter(col) for col in layout["gap_columns"]}
     widths = {
         "A": 5.5,
         "B": 6.0,
         "C": col_c_width,
-        "I": 1.0,
-        "U": 1.0,
         "AG": 6.0,
         "AH": 6.0,
     }
@@ -128,6 +193,8 @@ def _apply_dimensions(ws, slot_width: float, col_c_width: float) -> None:
         letter = get_column_letter(col)
         if letter in widths:
             ws.column_dimensions[letter].width = widths[letter]
+        elif letter in gap_letters:
+            ws.column_dimensions[letter].width = 1.0
         else:
             ws.column_dimensions[letter].width = slot_width
 
@@ -140,7 +207,7 @@ def _apply_row_heights(ws, start_row: int, grid_row_height: float) -> None:
         32: 0.75,
         33: 12.0,
         34: 12.0,
-        47: 4.5,
+        SEPARATOR_ROW: 4.5,
     }
     for rel_row, height in fixed.items():
         ws.row_dimensions[start_row + (rel_row - 1)].height = height
@@ -150,10 +217,10 @@ def _apply_row_heights(ws, start_row: int, grid_row_height: float) -> None:
         ws.row_dimensions[start_row + (rel_row - 1)].height = grid_row_height
 
 
-def _merge_block(ws, start_row: int) -> None:
+def _merge_block(ws, start_row: int, day_periods: Dict[str, int]) -> None:
     from openpyxl.utils.cell import coordinate_from_string
 
-    for rng in BLOCK_MERGES:
+    for rng in _iter_block_merges(day_periods):
         start, end = rng.split(":")
         s_col, s_row = coordinate_from_string(start)
         e_col, e_row = coordinate_from_string(end)
@@ -162,11 +229,11 @@ def _merge_block(ws, start_row: int) -> None:
         ws.merge_cells(f"{s_col}{s_row}:{e_col}{e_row}")
 
 
-def _apply_merge_borders(ws, start_row: int, border) -> None:
+def _apply_merge_borders(ws, start_row: int, border, day_periods: Dict[str, int]) -> None:
     from openpyxl.utils.cell import coordinate_from_string
     from openpyxl.utils import column_index_from_string
 
-    for rng in BLOCK_MERGES:
+    for rng in _iter_block_merges(day_periods):
         start, end = rng.split(":")
         s_col, s_row = coordinate_from_string(start)
         e_col, e_row = coordinate_from_string(end)
@@ -207,7 +274,8 @@ def _init_block(
     from openpyxl.utils import get_column_letter
     from openpyxl.styles import Font, Alignment, Border, Side
 
-    _merge_block(ws, start_row)
+    layout = _build_sheet_layout(day_periods)
+    _merge_block(ws, start_row, day_periods)
     _apply_row_heights(ws, start_row, grid_row_height)
 
     thin = Side(style="thin")
@@ -227,7 +295,7 @@ def _init_block(
     font_label_small = Font(name="游ゴシック", size=11)
     font_subject = Font(name="ＭＳ 明朝", size=12)
 
-    _apply_merge_borders(ws, start_row, border_all)
+    _apply_merge_borders(ws, start_row, border_all, day_periods)
 
     row1 = start_row
     row2 = start_row + 1
@@ -235,8 +303,8 @@ def _init_block(
     row32 = start_row + 31
     row33 = start_row + 32
     row34 = start_row + 33
-    row48 = start_row + 47
     row49 = start_row + 48
+    row50 = start_row + 49
 
     cell = _safe_cell(ws, row1, 1)
     if cell is not None:
@@ -250,7 +318,7 @@ def _init_block(
         cell.value = title_text
         cell.font = font_title
         cell.alignment = align_center
-        cell.border = border_bottom
+        cell.border = border_all
 
     cell = _safe_cell(ws, row2, 1)
     if cell is not None:
@@ -259,10 +327,13 @@ def _init_block(
         cell.alignment = align_center
         cell.border = border_all
 
-    for col, label in [(4, "月曜日"), (10, "火曜日"), (16, "水曜日"), (22, "木曜日"), (27, "金曜日")]:
-        cell = _safe_cell(ws, row2, col)
+    for day in DAY_ORDER:
+        day_range = layout["day_ranges"].get(day)
+        if not day_range:
+            continue
+        cell = _safe_cell(ws, row2, day_range[0])
         if cell is not None:
-            cell.value = label
+            cell.value = f"{DAY_JP[day]}曜日"
             cell.font = font_day
             cell.alignment = align_center
             cell.border = border_all
@@ -281,10 +352,13 @@ def _init_block(
         cell.alignment = align_center
         cell.border = border_all
 
-    for col, label in [(4, "月曜日"), (10, "火曜日"), (16, "水曜日"), (22, "木曜日"), (27, "金曜日")]:
-        cell = _safe_cell(ws, row33, col)
+    for day in DAY_ORDER:
+        day_range = layout["day_ranges"].get(day)
+        if not day_range:
+            continue
+        cell = _safe_cell(ws, row33, day_range[0])
         if cell is not None:
-            cell.value = label
+            cell.value = f"{DAY_JP[day]}曜日"
             cell.font = font_day
             cell.alignment = align_center
             cell.border = border_all
@@ -296,25 +370,16 @@ def _init_block(
         cell.alignment = align_center
         cell.border = border_all
 
-    for day, letter in DAY_LETTERS.items():
-        max_p = min(int(day_periods.get(day, 0)), len(SHEET_COLUMNS.get(day, [])))
-        for p in range(1, max_p + 1):
-            col = _slot_to_column(day, p)
-            if not col:
-                continue
-            cell = _safe_cell(ws, row32, col)
-            if cell is not None:
-                cell.value = f"{letter}{p}"
-                cell.font = font_day
-                cell.alignment = align_center
-                cell.border = border_all
+    for day, p, col in layout["slot_columns"]:
+        letter = DAY_LETTERS.get(day, day[:1].upper())
+        cell = _safe_cell(ws, row32, col)
+        if cell is not None:
+            cell.value = f"{letter}{p}"
+            cell.font = font_day
+            cell.alignment = align_center
+            cell.border = border_all
 
-    for day in DAY_ORDER:
-        max_p = min(int(day_periods.get(day, 0)), len(SHEET_COLUMNS.get(day, [])))
-        for p in range(1, max_p + 1):
-            col = _slot_to_column(day, p)
-            if not col:
-                continue
+    for day, _p, col in layout["slot_columns"]:
             col_letter = get_column_letter(col)
             label_ref = f"{col_letter}{row32}"
             if use_prefix:
@@ -344,7 +409,7 @@ def _init_block(
                     cell.alignment = align_center
                     cell.border = border_all
 
-    for col in range(4, 33):
+    for col in range(layout["slot_area_start_col"], RIGHT_LABEL_COL):
         cell = ws.cell(row2, col)
         cell.border = border_all
         if cell.value is None:
@@ -389,31 +454,8 @@ def _init_block(
         cell.alignment = align_center
         cell.border = border_all
 
-    cell = ws.cell(row48, 1)
-    _set_value(cell, "特別支援")
-    cell.font = font_subject
-    cell.alignment = align_center
-    cell.border = border_all
-    cell = ws.cell(row48, 33)
-    _set_value(cell, f"=A{row48}")
-    cell.font = font_subject
-    cell.alignment = align_center
-    cell.border = border_all
-    for day in DAY_ORDER:
-        max_p = min(int(day_periods.get(day, 0)), len(SHEET_COLUMNS.get(day, [])))
-        for p in range(1, max_p + 1):
-            col = _slot_to_column(day, p)
-            if not col:
-                continue
-            col_letter = get_column_letter(col)
-            cell = ws.cell(row48, col)
-            _set_value(cell, f'=IFERROR(INDEX($C${start_row+3}:$AF${start_row+30},MATCH("特",{col_letter}${start_row+3}:{col_letter}${start_row+30},0),1),"")')
-            cell.font = font_grid_alt
-            cell.alignment = align_center
-            cell.border = border_all
-
     cell = ws.cell(row49, 1)
-    _set_value(cell, "巡回(施錠)")
+    _set_value(cell, "特別支援")
     cell.font = font_subject
     cell.alignment = align_center
     cell.border = border_all
@@ -422,18 +464,31 @@ def _init_block(
     cell.font = font_subject
     cell.alignment = align_center
     cell.border = border_all
-    for day in DAY_ORDER:
-        max_p = min(int(day_periods.get(day, 0)), len(SHEET_COLUMNS.get(day, [])))
-        for p in range(1, max_p + 1):
-            col = _slot_to_column(day, p)
-            if not col:
-                continue
-            col_letter = get_column_letter(col)
-            cell = ws.cell(row49, col)
-            _set_value(cell, f'=IFERROR(INDEX($C${start_row+3}:$AF${start_row+30},MATCH("巡回",{col_letter}${start_row+3}:{col_letter}${start_row+30},0),1),"")')
-            cell.font = font_grid_alt
-            cell.alignment = align_center
-            cell.border = border_all
+    for _day, _p, col in layout["slot_columns"]:
+        col_letter = get_column_letter(col)
+        cell = ws.cell(row49, col)
+        _set_value(cell, f'=IFERROR(INDEX($C${start_row+3}:$AF${start_row+30},MATCH("特",{col_letter}${start_row+3}:{col_letter}${start_row+30},0),1),"")')
+        cell.font = font_grid_alt
+        cell.alignment = align_center
+        cell.border = border_all
+
+    cell = ws.cell(row50, 1)
+    _set_value(cell, "巡回(施錠)")
+    cell.font = font_subject
+    cell.alignment = align_center
+    cell.border = border_all
+    cell = ws.cell(row50, 33)
+    _set_value(cell, f"=A{row50}")
+    cell.font = font_subject
+    cell.alignment = align_center
+    cell.border = border_all
+    for _day, _p, col in layout["slot_columns"]:
+        col_letter = get_column_letter(col)
+        cell = ws.cell(row50, col)
+        _set_value(cell, f'=IFERROR(INDEX($C${start_row+3}:$AF${start_row+30},MATCH("巡回",{col_letter}${start_row+3}:{col_letter}${start_row+30},0),1),"")')
+        cell.font = font_grid_alt
+        cell.alignment = align_center
+        cell.border = border_all
 
     for col in (1, 2, 3):
         cell = _safe_cell(ws, row33, col)
@@ -449,12 +504,17 @@ def _init_block(
 
 
 def _build_yobi_sheet(ws, classes: List[str], day_periods: Dict[str, int]) -> None:
+    layout = _build_sheet_layout(day_periods)
+
     def write_block(start_row: int, title: str) -> None:
         ws.cell(start_row, 1, title)
         for d in DAY_ORDER:
-            c0 = DAY_START_COL[d]
+            day_range = layout["day_ranges"].get(d)
+            if not day_range:
+                continue
+            c0 = day_range[0]
             ws.cell(start_row, c0, f"{DAY_JP[d]}曜日")
-            for p in range(1, int(day_periods[d]) + 1):
+            for p in range(1, layout["counts"][d] + 1):
                 ws.cell(start_row + 1, c0 + p - 1, p)
         for i, c in enumerate(classes):
             ws.cell(start_row + 2 + i, 1, c)
@@ -544,10 +604,67 @@ def _build_teacher_rows(config: dict) -> list[tuple[str, str, str]]:
     return rows
 
 
+def _config_classes(config: dict) -> list[str]:
+    return [str(cls).strip() for cls in cast(list[Any], config.get("classes", CLASS_ORDER_DEFAULT)) if str(cls).strip()]
+
+
+def _config_scenarios(config: dict) -> list[dict[str, Any]]:
+    return [cast(dict[str, Any], scenario) for scenario in cast(list[Any], config.get("scenarios", [])) if isinstance(scenario, dict)]
+
+
+def _config_day_periods(config: dict) -> dict[str, int]:
+    raw = cast(dict[str, Any], config.get("day_periods", {}))
+    return {day: int(raw.get(day, 0) or 0) for day in DAY_ORDER}
+
+
+def _build_teacher_slot_marks(config: dict) -> dict[str, dict[str, str]]:
+    teacher_slot_marks: dict[str, dict[str, str]] = {}
+    for teacher in config.get("teachers", []):
+        name = str(teacher.get("name", "")).strip()
+        if not name:
+            continue
+        slot_marks = teacher_slot_marks.setdefault(name, {})
+        for slot in teacher.get("discouraged_slots", []):
+            slot_key = str(slot).strip()
+            if slot_key:
+                slot_marks[slot_key] = EXCEL_UNAVAIL_SOFT_MARK
+        for slot in teacher.get("unavailable_slots", []):
+            slot_key = str(slot).strip()
+            if slot_key:
+                slot_marks[slot_key] = EXCEL_UNAVAIL_HARD_MARK
+        if not slot_marks:
+            teacher_slot_marks.pop(name, None)
+    return teacher_slot_marks
+
+
+def _build_individual_teacher_label(config: dict) -> str:
+    names: list[str] = []
+    for teacher in config.get("teachers", []):
+        name = str(teacher.get("name", "")).strip()
+        if not name:
+            continue
+        subjects = [
+            _normalize_subject_name(str(subject))
+            for subject in teacher.get("subjects", [])
+            if _normalize_subject_name(str(subject))
+        ]
+        if "個別" in subjects and name not in names:
+            names.append(name)
+    return "・".join(names)
+
+
 def _ensure_class_subject_teacher(config: dict) -> dict:
-    existing: dict[str, dict[str, str]] = {
-        cls: dict(subj_map) for cls, subj_map in config.get("class_subject_teacher", {}).items()
-    }
+    existing: dict[str, dict[str, str]] = {}
+    raw_existing = config.get("class_subject_teacher", {})
+    if isinstance(raw_existing, dict):
+        for cls, subj_map in raw_existing.items():
+            if not isinstance(subj_map, dict):
+                continue
+            existing[str(cls).strip()] = {
+                str(subj).strip(): str(name).strip()
+                for subj, name in subj_map.items()
+                if str(subj).strip() and str(name).strip()
+            }
     merged: dict[str, dict[str, str]] = {}
     for t in config.get("teachers", []):
         name = str(t.get("name", "")).strip()
@@ -618,9 +735,9 @@ def _build_tt_assignment_index(
         try:
             day, period = parse_slot_key(slot).day, parse_slot_key(slot).period
             day_idx = DAY_ORDER.index(day) if day in DAY_ORDER else len(DAY_ORDER)
-            return (day_idx, int(period), slot)
+            return day_idx, int(period), slot
         except Exception:
-            return (len(DAY_ORDER), 999, slot)
+            return len(DAY_ORDER), 999, slot
 
     def _resolve_regular_teachers(cls: str, subj: str) -> list[str]:
         regular_teachers: list[str] = []
@@ -703,10 +820,11 @@ def _build_tt_assignment_index(
         if not units:
             continue
 
-        unit_order = sorted(
-            range(len(units)),
-            key=lambda idx: (len(units[idx][1]), _class_sort_key(units[idx][0]), idx),
-        )
+        def _unit_order_key(unit_idx: int) -> tuple[int, tuple, int]:
+            cls_name, candidates = units[unit_idx]
+            return len(candidates), _class_sort_key(cls_name), unit_idx
+
+        unit_order = sorted(range(len(units)), key=_unit_order_key)
         matched_slot_to_unit: dict[str, int] = {}
 
         def _try_match(unit_idx: int, seen_slots: set[str]) -> bool:
@@ -947,6 +1065,7 @@ def _fill_block(
 
     slot_columns = _iter_slot_columns(day_periods)
     slot_to_col_map = {f"{d}-{p}": col for d, p, col in slot_columns}
+    individual_teacher_label = _build_individual_teacher_label(config)
     thin = Side(style="thin")
     border_all = Border(left=thin, right=thin, top=thin, bottom=thin)
     align_center = Alignment(horizontal="center", vertical="center")
@@ -962,12 +1081,23 @@ def _fill_block(
     pe_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
     onbi_fill = PatternFill(start_color=ONBI_FILL_COLOR, end_color=ONBI_FILL_COLOR, fill_type="solid")
     techka_fill = PatternFill(start_color=TECHKA_FILL_COLOR, end_color=TECHKA_FILL_COLOR, fill_type="solid")
+    unavailable_fill = PatternFill(start_color=EXCEL_UNAVAIL_HARD_FILL_COLOR, end_color=EXCEL_UNAVAIL_HARD_FILL_COLOR, fill_type="solid")
+    discouraged_fill = PatternFill(start_color=EXCEL_UNAVAIL_SOFT_FILL_COLOR, end_color=EXCEL_UNAVAIL_SOFT_FILL_COLOR, fill_type="solid")
+    teacher_slot_marks = _build_teacher_slot_marks(config)
 
     def _group_fill(group_key: str | None):
         if group_key == "onbi":
             return onbi_fill
         if group_key == "techka":
             return techka_fill
+        return None
+
+    def _teacher_slot_fill(teacher_name: str, slot: str):
+        mark = teacher_slot_marks.get(teacher_name, {}).get(slot)
+        if mark == EXCEL_UNAVAIL_HARD_MARK:
+            return unavailable_fill
+        if mark == EXCEL_UNAVAIL_SOFT_MARK:
+            return discouraged_fill
         return None
 
     for r in range(teacher_row_start, teacher_row_end + 1):
@@ -1003,6 +1133,10 @@ def _fill_block(
         cell.border = border_all
         cell.font = font_subject
         cell.alignment = align_center
+        for slot, col in slot_to_col_map.items():
+            mark_fill = _teacher_slot_fill(name, slot)
+            if mark_fill is not None:
+                ws.cell(r, col).fill = mark_fill
 
     tt_assignment_index = _build_tt_assignment_index(
         config=config,
@@ -1036,8 +1170,11 @@ def _fill_block(
             cell.border = border_all
             cell.font = font_grid
             cell.alignment = align_center
+            mark_fill = _teacher_slot_fill(teacher, slot)
             teacher_fill = _group_fill(_origin_group_key(teacher_schedule_origins.get(teacher, {}).get(slot)))
-            if teacher_fill is not None:
+            if mark_fill is not None:
+                cell.fill = mark_fill
+            elif teacher_fill is not None:
                 cell.fill = teacher_fill
 
     for r in range(class_row_start, class_row_end + 1):
@@ -1100,11 +1237,13 @@ def _fill_block(
     if individual_row <= class_row_end:
         cell = ws.cell(individual_row, 1)
         _set_value(cell, "個別")
+        cell.number_format = "@"
         cell.border = border_all
         cell.font = font_subject
         cell.alignment = align_center
         cell = ws.cell(individual_row, 3)
-        _set_value(cell, "")
+        _set_value(cell, individual_teacher_label)
+        cell.number_format = "@"
         cell.border = border_all
         cell.font = font_subject
         cell.alignment = align_center
@@ -1116,24 +1255,28 @@ def _create_workbook_simple(config: dict, solved_by_scenario: Dict[str, Dict[str
     except ImportError as e:
         raise RuntimeError("openpyxl が必要です。`pip install openpyxl` を実行してください。") from e
 
-    classes = config.get("classes", CLASS_ORDER_DEFAULT)
-    day_periods = config["day_periods"]
+    classes = _config_classes(config)
+    day_periods = _config_day_periods(config)
+    scenarios = _config_scenarios(config)
 
-    wb = openpyxl.Workbook()
-    ws0 = wb.active
+    wb = cast(Any, openpyxl.Workbook())
+    ws0 = cast(Any, wb.active)
     ws0.title = "時間割（略図）"
     wb.create_sheet("完成")
     wb.create_sheet("技能科目")
     wb.create_sheet("予備")
 
-    _build_kansei_sheet(wb["完成"], classes, day_periods)
-    _build_skill_sheet(wb["技能科目"], classes, day_periods)
-    _build_yobi_sheet(wb["予備"], classes, day_periods)
+    ws_kansei = cast(Any, wb["完成"])
+    ws_skill = cast(Any, wb["技能科目"])
+    ws_yobi = cast(Any, wb["予備"])
 
-    ws_yobi = wb["予備"]
-    for scenario in config["scenarios"]:
-        sid = scenario["id"]
-        block = scenario.get("target_block", "upper")
+    _build_kansei_sheet(ws_kansei, classes, day_periods)
+    _build_skill_sheet(ws_skill, classes, day_periods)
+    _build_yobi_sheet(ws_yobi, classes, day_periods)
+
+    for scenario in scenarios:
+        sid = str(scenario.get("id", "")).strip()
+        block = str(scenario.get("target_block", "upper") or "upper")
         row_base = row_base_for_block(block)
         solved = solved_by_scenario[sid]
         for idx, c in enumerate(classes):
@@ -1142,13 +1285,12 @@ def _create_workbook_simple(config: dict, solved_by_scenario: Dict[str, Dict[str
                 if _normalize_subject_name(subj) == "個別":
                     continue
                 sl = parse_slot_key(slot_key)
-                col = slot_to_col(sl)
+                col = slot_to_col(sl, day_periods)
                 ws_yobi.cell(row, col, subj)
 
-    ws_kansei = wb["完成"]
     row = 3
-    for scenario in config["scenarios"]:
-        sid = scenario["id"]
+    for scenario in scenarios:
+        sid = str(scenario.get("id", "")).strip()
         solved = solved_by_scenario[sid]
         for c in classes:
             ws_kansei.cell(row, 1, sid)
@@ -1161,10 +1303,10 @@ def _create_workbook_simple(config: dict, solved_by_scenario: Dict[str, Dict[str
                     col += 1
             row += 1
 
-    ws_skill = wb["技能科目"]
     skill_subjects = set(config.get("skill_subjects", []))
-    if config.get("scenarios"):
-        first = solved_by_scenario[config["scenarios"][0]["id"]]
+    if scenarios:
+        first_id = str(scenarios[0].get("id", "")).strip()
+        first = solved_by_scenario[first_id]
         for i, c in enumerate(classes):
             row_skill = 3 + i
             col = 2
@@ -1188,15 +1330,15 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
         _create_workbook_simple(config, solved_by_scenario, output_path)
         return
 
-    classes = config.get("classes", CLASS_ORDER_DEFAULT)
-    day_periods = config["day_periods"]
+    classes = _config_classes(config)
+    day_periods = _config_day_periods(config)
     teacher_rows = _build_teacher_rows(config)
     class_subject_teacher = _ensure_class_subject_teacher(config)
     class_subject_teacher_index = _build_class_subject_teacher_index(config)
 
     teacher_name_max = max((len(name) for _g, _s, name in teacher_rows), default=6)
     col_c_width = max(8.0, min(16.0, teacher_name_max + 2))
-    slot_count = sum(min(int(day_periods.get(d, 0)), len(SHEET_COLUMNS.get(d, []))) for d in DAY_ORDER)
+    slot_count = _build_sheet_layout(day_periods)["total_slots"]
 
     page_width_in = 16.54
     page_height_in = 11.69
@@ -1223,15 +1365,17 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
     tt_upper = _collect_tt_marks(config, upper_id)
     tt_lower = _collect_tt_marks(config, lower_id)
 
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
+    wb = cast(Any, openpyxl.Workbook())
+    active = wb.active
+    if active is not None:
+        wb.remove(active)
 
-    variants = _apply_excel_variant_overrides(config, _default_excel_variants())
+    variants = cast(list[dict[str, Any]], _apply_excel_variant_overrides(config, _default_excel_variants()))
 
-    ws_kansei = wb.create_sheet("完成")
-    _apply_dimensions(ws_kansei, slot_width=slot_width, col_c_width=col_c_width)
+    ws_kansei = cast(Any, wb.create_sheet("完成"))
+    _apply_dimensions(ws_kansei, slot_width=slot_width, col_c_width=col_c_width, day_periods=day_periods)
 
-    print_areas = []
+    print_areas: list[str] = []
     for idx, v in enumerate(variants):
         name = v["id"]
         use_lower = bool(v.get("use_lower"))
@@ -1240,7 +1384,7 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
         onbi_overrides = v.get("onbi_overrides") or {}
         tech_overrides = v.get("tech_overrides") or {}
         title = _variant_title(name, use_lower, onbi_start_music, tech_subject)
-        start_row = 1 + (idx * 50)
+        start_row = 1 + (idx * BLOCK_PITCH)
         _init_block(ws_kansei, start_row, name, title, day_periods, use_prefix=True, grid_row_height=grid_row_height)
         print_areas.append(f"$A${start_row}:$AH${start_row + (BLOCK_HEIGHT - 1)}")
 
@@ -1287,15 +1431,15 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
         from openpyxl.worksheet.pagebreak import Break
 
         for idx in range(1, len(variants)):
-            ws_kansei.row_breaks.append(Break(id=1 + (idx * 50)))
+            ws_kansei.row_breaks.append(Break(id=1 + (idx * BLOCK_PITCH)))
     except Exception:
         pass
 
-    ws_r6 = wb.create_sheet("略図")
-    _apply_dimensions(ws_r6, slot_width=slot_width, col_c_width=col_c_width)
+    ws_r6 = cast(Any, wb.create_sheet("略図"))
+    _apply_dimensions(ws_r6, slot_width=slot_width, col_c_width=col_c_width, day_periods=day_periods)
     _init_block(ws_r6, 1, "①②④⑤", "＜先生の授業時間割一覧　①②④⑤＞", day_periods, use_prefix=False, grid_row_height=grid_row_height)
-    _init_block(ws_r6, 51, "③⑥", "＜先生の授業時間割一覧　③⑥＞", day_periods, use_prefix=False, grid_row_height=grid_row_height)
-    ws_r6.print_area = "$A$1:$AH$49,$A$51:$AH$99"
+    _init_block(ws_r6, 1 + BLOCK_PITCH, "③⑥", "＜先生の授業時間割一覧　③⑥＞", day_periods, use_prefix=False, grid_row_height=grid_row_height)
+    ws_r6.print_area = f"$A$1:$AH${BLOCK_HEIGHT},$A${1 + BLOCK_PITCH}:$AH${BLOCK_PITCH + BLOCK_HEIGHT}"
     ws_r6.sheet_view.view = "pageBreakPreview"
     ws_r6.page_setup.orientation = ws_r6.ORIENTATION_LANDSCAPE
     ws_r6.page_setup.paperSize = ws_r6.PAPERSIZE_A3
@@ -1310,7 +1454,7 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
     ws_r6.page_margins.footer = 0.1
     try:
         from openpyxl.worksheet.pagebreak import Break
-        ws_r6.row_breaks.append(Break(id=51))
+        ws_r6.row_breaks.append(Break(id=1 + BLOCK_PITCH))
     except Exception:
         pass
 
@@ -1351,7 +1495,7 @@ def create_workbook_by_structure(config: dict, solved_by_scenario: Dict[str, Dic
     )
     _fill_block(
         ws_r6,
-        start_row=51,
+        start_row=1 + BLOCK_PITCH,
         assignments=ryaku_lower,
         origin_subjects=ryaku_lower_origins,
         tt_marks=tt_lower,
